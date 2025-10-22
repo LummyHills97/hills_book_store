@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hills_book_store/features/onboarding/presentation/bloc/onboarding_cubit.dart';
 import 'package:hills_book_store/features/onboarding/widgets/onboarding_page.dart';
-import '../../logic/onboarding_cubit.dart';
-
+import 'package:hills_book_store/features/onboarding/widgets/onboarding_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
   OnboardingScreen({super.key});
@@ -14,7 +13,8 @@ class OnboardingScreen extends StatelessWidget {
     {
       "image": "assets/images/onboarding/onboarding1.png",
       "title": "Discover Great Books",
-      "description": "Explore our collection of the best educational and inspirational titles."
+      "description":
+          "Explore our collection of the best educational and inspirational titles."
     },
     {
       "image": "assets/images/onboarding/onboarding2.png",
@@ -24,6 +24,11 @@ class OnboardingScreen extends StatelessWidget {
     {
       "image": "assets/images/onboarding/onboarding3.png",
       "title": "Learn Anytime, Anywhere",
+      "description": "Enjoy reading on the go with digital and physical copies."
+    },
+    {
+      "image": "assets/images/onboarding/onboarding4.png",
+      "title": "Reading without Limits",
       "description": "Enjoy reading on the go with digital and physical copies."
     },
   ];
@@ -48,6 +53,32 @@ class OnboardingScreen extends StatelessWidget {
                       image: item["image"]!,
                       title: item["title"]!,
                       description: item["description"]!,
+                    );
+                  },
+                ),
+              ),
+
+              // 👇 Button Section
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: BlocBuilder<OnboardingCubit, int>(
+                  builder: (context, currentPage) {
+                    final isLastPage = currentPage == _data.length - 1;
+
+                    return OnboardingButton(
+                      text: isLastPage ? "Get Started" : "Next",
+                      onPressed: () {
+                        if (isLastPage) {
+                          // Navigate to Welcome Screen
+                          Navigator.pushReplacementNamed(context, '/welcome');
+                        } else {
+                          _controller.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
                     );
                   },
                 ),
