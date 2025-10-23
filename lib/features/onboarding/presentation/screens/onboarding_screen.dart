@@ -1,91 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hills_book_store/features/onboarding/presentation/bloc/onboarding_cubit.dart';
 import 'package:hills_book_store/features/onboarding/widgets/onboarding_page.dart';
 import 'package:hills_book_store/features/onboarding/widgets/onboarding_button.dart';
 
-class OnboardingScreen extends StatelessWidget {
-  OnboardingScreen({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
-  final PageController _controller = PageController();
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
 
-  final List<Map<String, String>> _data = [
-    {
-      "image": "assets/images/onboarding/onboarding1.png",
-      "title": "Discover Great Books",
-      "description":
-          "Explore our collection of the best educational and inspirational titles."
-    },
-    {
-      "image": "assets/images/onboarding/onboarding2.png",
-      "title": "Order with Ease",
-      "description": "Shop your favorite books in just a few taps."
-    },
-    {
-      "image": "assets/images/onboarding/onboarding3.png",
-      "title": "Learn Anytime, Anywhere",
-      "description": "Enjoy reading on the go with digital and physical copies."
-    },
-    {
-      "image": "assets/images/onboarding/onboarding4.png",
-      "title": "Reading without Limits",
-      "description": "Enjoy reading on the go with digital and physical copies."
-    },
-  ];
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  void _nextPage() {
+    if (_currentPage < 3) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OnboardingCubit(),
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount: _data.length,
-                  onPageChanged: (index) =>
-                      context.read<OnboardingCubit>().nextPage(index),
-                  itemBuilder: (_, index) {
-                    final item = _data[index];
-                    return OnboardingPage(
-                      image: item["image"]!,
-                      title: item["title"]!,
-                      description: item["description"]!,
-                    );
-                  },
-                ),
-              ),
+    // list of onboarding data (kept here for clarity)
+    final pages = [
+      {
+        "image": "assets/images/onboarding/onboarding0.png",
+        "title": "Discover Great Books",
+        "description":
+            "Explore our collection of the best educational and inspirational titles.",
+      },
+      {
+        "image": "assets/images/onboarding/onboarding2.png",
+        "title": "Order with Ease",
+        "description": "Shop your favorite books in just a few taps.",
+      },
+      {
+        "image": "assets/images/onboarding/onboarding3.png",
+        "title": "Learn Anytime, Anywhere",
+        "description": "Enjoy reading on the go with digital and physical copies.",
+      },
+      {
+        "image": "assets/images/onboarding/onboarding4.png",
+        "title": "Join the Hills Community",
+        "description": "Login or create an account to start your journey.",
+      },
+    ];
 
-              // 👇 Button Section
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                child: BlocBuilder<OnboardingCubit, int>(
-                  builder: (context, currentPage) {
-                    final isLastPage = currentPage == _data.length - 1;
-
-                    return OnboardingButton(
-                      text: isLastPage ? "Get Started" : "Next",
-                      onPressed: () {
-                        if (isLastPage) {
-                          // Navigate to Welcome Screen
-                          Navigator.pushReplacementNamed(context, '/welcome');
-                        } else {
-                          _controller.nextPage(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // PageView for onboarding pages
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: pages.length,
+              onPageChanged: (index) {
+                setState(() => _currentPage = index);
+              },
+              itemBuilder: (context, index) {
+                final item = pages[index];
+                return OnboardingPage(
+                  image: item['image']!,
+                  title: item['title']!,
+                  description: item['description']!,
+                );
+              },
+            ),
           ),
-        ),
+
+          // Buttons section
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+            child: Column(
+              children: [
+                if (_currentPage < pages.length - 1)
+                  OnboardingButton(
+                    text: "Next",
+                    onPressed: _nextPage,
+                    backgroundColor: Colors.green.shade900,
+                    textColor: Colors.white,
+                  ),
+                if (_currentPage == pages.length - 1) ...[
+                  OnboardingButton(
+                    text: "Login",
+                    onPressed: () {
+                      // TODO: Navigate to Login screen
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    backgroundColor: Colors.white,
+                    textColor: Colors.green.shade900,
+                  ),
+                  const SizedBox(height: 12),
+                  OnboardingButton(
+                    text: "Create Account",
+                    onPressed: () {
+                      // TODO: Navigate to Signup screen
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    backgroundColor: Colors.green.shade900,
+                    textColor: Colors.white,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
