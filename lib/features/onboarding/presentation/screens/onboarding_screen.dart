@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
 import 'package:hills_book_store/features/onboarding/widgets/onboarding_page.dart';
 import 'package:hills_book_store/features/onboarding/widgets/onboarding_button.dart';
 
@@ -99,41 +100,70 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-                 // 👇 Buttons section
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-  child: Column(
-    children: [
-      if (_currentPage < pages.length - 1)
-        OnboardingButton(
-          text: _currentPage == 0 ? "Get Started" : "Next",
-          onPressed: _nextPage,
-          backgroundColor: Colors.green.shade900,
-          textColor: Colors.white,
-        ),
-      if (_currentPage == pages.length - 1) ...[
-        OnboardingButton(
-          text: "Login",
-          onPressed: () {
-            Navigator.pushNamed(context, '/login');
-          },
-          backgroundColor: Colors.white,
-          textColor: Colors.green.shade900,
-        ),
-        const SizedBox(height: 12),
-        OnboardingButton(
-          text: "Create Account",
-          onPressed: () {
-            Navigator.pushNamed(context, '/register');
-          },
-          backgroundColor: Colors.green.shade900,
-          textColor: Colors.white,
-        ),
-      ],
-    ],
-  ),
-),
+          // 👇 Buttons section
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+            child: Column(
+              children: [
+                if (_currentPage < pages.length - 1)
+                  OnboardingButton(
+                    text: _currentPage == 0 ? "Get Started" : "Next",
+                    onPressed: _nextPage,
+                    backgroundColor: Colors.green.shade900,
+                    textColor: Colors.white,
+                  ),
+                if (_currentPage == pages.length - 1) ...[
+                  OnboardingButton(
+                    text: "Login",
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    backgroundColor: Colors.white,
+                    textColor: Colors.green.shade900,
+                  ),
+                  const SizedBox(height: 12),
+                  OnboardingButton(
+                    text: "Create Account",
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    backgroundColor: Colors.green.shade900,
+                    textColor: Colors.white,
+                  ),
+                  const SizedBox(height: 20),
 
+                  // ✅ NEW: Get Started Elevated Button
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade900,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 40),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text(
+                      "Get Started",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );

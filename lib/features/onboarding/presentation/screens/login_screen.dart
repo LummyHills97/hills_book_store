@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/create_account_screen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -169,8 +171,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   GestureDetector(
                     onTap: () {
-                      // TODO: Navigate to register
-                      Navigator.pushNamed(context, '/register');
+                      // ✅ Navigate to Create Account Screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CreateAccountScreen(),
+                        ),
+                      );
                     },
                     child: Text(
                       "Sign up",
