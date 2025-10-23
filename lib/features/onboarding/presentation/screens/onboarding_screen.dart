@@ -30,8 +30,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // list of onboarding data (kept here for clarity)
-    final pages = [
+    // ✅ Keep all pages as maps
+    final List<Map<String, String>> pages = [
       {
         "image": "assets/images/onboarding/onboarding0.png",
         "title": "Discover Great Books",
@@ -49,6 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         "description": "Enjoy reading on the go with digital and physical copies.",
       },
       {
+        "subtitle": "Welcome",
         "image": "assets/images/onboarding/onboarding4.png",
         "title": "Join the Hills Community",
         "description": "Login or create an account to start your journey.",
@@ -59,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // PageView for onboarding pages
+          // ✅ PageView builder
           Expanded(
             child: PageView.builder(
               controller: _pageController,
@@ -73,12 +74,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   image: item['image']!,
                   title: item['title']!,
                   description: item['description']!,
+                  subtitle: item['subtitle'], // ✅ safely optional
                 );
               },
             ),
           ),
 
-          // Buttons section
+          // ✅ Buttons section
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
@@ -95,7 +97,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   OnboardingButton(
                     text: "Login",
                     onPressed: () {
-                      // TODO: Navigate to Login screen
                       Navigator.pushNamed(context, '/login');
                     },
                     backgroundColor: Colors.white,
@@ -105,7 +106,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   OnboardingButton(
                     text: "Create Account",
                     onPressed: () {
-                      // TODO: Navigate to Signup screen
                       Navigator.pushNamed(context, '/register');
                     },
                     backgroundColor: Colors.green.shade900,
