@@ -99,41 +99,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-          // 👇 Buttons section
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-            child: Column(
-              children: [
-                if (_currentPage < pages.length - 1)
-                  OnboardingButton(
-                    text: "Next",
-                    onPressed: _nextPage,
-                    backgroundColor: Colors.green.shade900,
-                    textColor: Colors.white,
-                  ),
-                if (_currentPage == pages.length - 1) ...[
-                  OnboardingButton(
-                    text: "Login",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login');
-                    },
-                    backgroundColor: Colors.white,
-                    textColor: Colors.green.shade900,
-                  ),
-                  const SizedBox(height: 12),
-                  OnboardingButton(
-                    text: "Create Account",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/register');
-                    },
-                    backgroundColor: Colors.green.shade900,
-                    textColor: Colors.white,
-                  ),
-                ],
-              ],
-            ),
-          ),
+                 // 👇 Buttons section
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+  child: Column(
+    children: [
+      if (_currentPage < pages.length - 1)
+        OnboardingButton(
+          text: _currentPage == 0 ? "Get Started" : "Next",
+          onPressed: _nextPage,
+          backgroundColor: Colors.green.shade900,
+          textColor: Colors.white,
+        ),
+      if (_currentPage == pages.length - 1) ...[
+        OnboardingButton(
+          text: "Login",
+          onPressed: () {
+            Navigator.pushNamed(context, '/login');
+          },
+          backgroundColor: Colors.white,
+          textColor: Colors.green.shade900,
+        ),
+        const SizedBox(height: 12),
+        OnboardingButton(
+          text: "Create Account",
+          onPressed: () {
+            Navigator.pushNamed(context, '/register');
+          },
+          backgroundColor: Colors.green.shade900,
+          textColor: Colors.white,
+        ),
+      ],
+    ],
+  ),
+),
+
         ],
       ),
     );
