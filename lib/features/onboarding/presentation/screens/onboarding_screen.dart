@@ -30,7 +30,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Keep all pages as maps
     final List<Map<String, String>> pages = [
       {
         "image": "assets/images/onboarding/onboarding0.png",
@@ -60,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // ✅ PageView builder
+          // 👇 PageView for onboarding pages
           Expanded(
             child: PageView.builder(
               controller: _pageController,
@@ -74,13 +73,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   image: item['image']!,
                   title: item['title']!,
                   description: item['description']!,
-                  subtitle: item['subtitle'], // ✅ safely optional
+                  subtitle: item['subtitle'],
                 );
               },
             ),
           ),
 
-          // ✅ Buttons section
+          // 👇 Dots Indicator
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              pages.length,
+              (index) => AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                height: 8,
+                width: _currentPage == index ? 24 : 8,
+                decoration: BoxDecoration(
+                  color: _currentPage == index
+                      ? Colors.green.shade900
+                      : Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+
+          // 👇 Buttons section
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
