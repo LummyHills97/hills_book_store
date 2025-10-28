@@ -51,6 +51,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // 👇 Onboarding content
           Expanded(
             child: PageView.builder(
               controller: _pageController,
@@ -90,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-          // Dots Indicator
+          // 👇 Dots Indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -109,59 +110,94 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
+
           const SizedBox(height: 30),
 
-          // Buttons
+          // 👇 Buttons Section
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (_currentPage < pages.length - 1)
-                  ElevatedButton(
-                    onPressed: _nextPage,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green.shade900,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _nextPage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade900,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Next",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: const Text("Next"),
                   ),
+
                 if (_currentPage == pages.length - 1) ...[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const CreateAccountScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green.shade900,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  // 👇 Login button (first)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        side: BorderSide(color: Colors.green.shade900),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade900,
+                        ),
                       ),
                     ),
-                    child: const Text("Create Account"),
                   ),
                   const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed: () {
-                      // TODO: Navigate to Login Screen
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.green.shade900,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  // 👇 Create Account button (second)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateAccountScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade900,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Create Account",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: const Text("Login"),
                   ),
                 ],
               ],
