@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
-import 'package:hills_book_store/features/onboarding/widgets/onboarding_page.dart';
-import 'package:hills_book_store/features/onboarding/widgets/onboarding_button.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/create_account_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -24,14 +22,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> pages = [
+    final pages = [
       {
         "image": "assets/images/onboarding/onboarding0.png",
         "title": "Discover Great Books",
@@ -49,7 +41,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         "description": "Enjoy reading on the go with digital and physical copies.",
       },
       {
-        "subtitle": "Welcome",
         "image": "assets/images/onboarding/onboarding4.png",
         "title": "Join the Hills Community",
         "description": "Login or create an account to start your journey.",
@@ -60,27 +51,46 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 👇 PageView for onboarding pages
           Expanded(
             child: PageView.builder(
               controller: _pageController,
               itemCount: pages.length,
-              onPageChanged: (index) {
-                setState(() => _currentPage = index);
-              },
+              onPageChanged: (index) => setState(() => _currentPage = index),
               itemBuilder: (context, index) {
                 final item = pages[index];
-                return OnboardingPage(
-                  image: item['image']!,
-                  title: item['title']!,
-                  description: item['description']!,
-                  subtitle: item['subtitle'],
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(item['image']!, height: 250),
+                      const SizedBox(height: 40),
+                      Text(
+                        item['title']!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        item['description']!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
           ),
 
-          // 👇 Dots Indicator
+          // Dots Indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -99,66 +109,59 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 30),
 
-          // 👇 Buttons section
+          // Buttons
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
             child: Column(
               children: [
                 if (_currentPage < pages.length - 1)
-                  OnboardingButton(
-                    text: _currentPage == 0 ? "Get Started" : "Next",
-                    onPressed: _nextPage,
-                    backgroundColor: Colors.green.shade900,
-                    textColor: Colors.white,
-                  ),
-                if (_currentPage == pages.length - 1) ...[
-                  OnboardingButton(
-                    text: "Login",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login');
-                    },
-                    backgroundColor: Colors.white,
-                    textColor: Colors.green.shade900,
-                  ),
-                  const SizedBox(height: 12),
-                  OnboardingButton(
-                    text: "Create Account",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/register');
-                    },
-                    backgroundColor: Colors.green.shade900,
-                    textColor: Colors.white,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // ✅ NEW: Get Started Elevated Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: _nextPage,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green.shade900,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 14, horizontal: 40),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text(
-                      "Get Started",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    child: const Text("Next"),
+                  ),
+                if (_currentPage == pages.length - 1) ...[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const CreateAccountScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade900,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
+                    child: const Text("Create Account"),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed: () {
+                      // TODO: Navigate to Login Screen
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.green.shade900,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text("Login"),
                   ),
                 ],
               ],
