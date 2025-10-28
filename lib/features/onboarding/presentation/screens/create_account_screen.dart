@@ -28,7 +28,7 @@ class CreateAccountScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/images/logo.png',
+                      'assets/images/onboarding/onboarding0.png',
                       height: 60,
                       width: 60,
                     ),
