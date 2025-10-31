@@ -13,7 +13,7 @@ class SuccessScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/onboarding/onboarding0.png", height: 120),
+              Image.asset("assets/images/onboarding/success.png", height: 120),
               const SizedBox(height: 30),
               const Text(
                 "Registration Successful!",
