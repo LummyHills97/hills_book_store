@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hills_book_store/features/onboarding/presentation/bloc/onboarding_cubit.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 
@@ -30,6 +31,8 @@ class HillsBookStore extends StatelessWidget {
         routes: {
           '/': (context) => const OnboardingScreen(),
           '/login': (context) => const LoginScreen(),
+          '/forgot-password': (context) => const ForgotPasswordScreen(),
+
         },
       ),
     );
