@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/create_account_screen.dart';
-
+import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/home_screen.dart'; // ✅ Import your Home Screen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -55,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // --- Email Field ---
               TextField(
                 controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email Address",
                   prefixIcon: const Icon(Icons.email_outlined),
@@ -96,7 +98,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // TODO: Navigate to forgot password
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotPasswordScreen(),
+                      ),
+                    );
                   },
                   child: Text(
                     "Forgot Password?",
@@ -114,7 +121,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: Handle login
+                    // ✅ Navigate with Slide + Fade Transition
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration:
+                            const Duration(milliseconds: 600),
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) =>
+                                const HomeScreen(),
+                        transitionsBuilder: (context, animation,
+                            secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.easeInOut;
+
+                          final tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          final offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            ),
+                          );
+                        },
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green.shade900,
@@ -171,7 +206,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   GestureDetector(
                     onTap: () {
-                      // ✅ Navigate to Create Account Screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -196,6 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // --- Social Button Widget ---
   Widget _buildSocialButton(String assetPath) {
     return InkWell(
       onTap: () {
