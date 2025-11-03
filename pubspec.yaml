@@ -23,4 +23,11 @@ flutter:
     - assets/images/onboarding/
     - assets/fonts/
     - assets/icons/
-    - assets/covers/
+    - assets/images/covers/cover1.png
+    - assets/images/covers/cover2.png
+    - assets/images/covers/cover3.png
+    - assets/images/covers/cover4.png
+    - assets/images/covers/cover5.png
+    - assets/images/covers/cover6.png
+    - assets/images/covers/cover7.png
+    - assets/images/covers/cover8.png
