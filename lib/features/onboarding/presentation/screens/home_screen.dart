@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,7 +9,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int _selectedCategoryIndex = 0;
 
+  // master list of books
   final List<Map<String, String>> _books = [
     {'image': 'assets/images/covers/cover1.png', 'title': 'The Sixth Child', 'author': 'Manith J.', 'price': '\$15.00', 'category': 'Fiction'},
     {'image': 'assets/images/covers/cover2.png', 'title': 'The Book of God', 'author': 'Walter W.', 'price': '\$16.88', 'category': 'Religion'},
@@ -24,156 +25,226 @@ class _HomeScreenState extends State<HomeScreen> {
     {'image': 'assets/images/covers/cover10.png', 'title': 'Learning Flutter', 'author': 'Dev Guru', 'price': '\$25.00', 'category': 'Education'},
   ];
 
-  final List<String> _categories = ['Fiction', 'Education', 'Non-Fiction', 'Children'];
-  int _selectedCategoryIndex = 0;
+  // category chips
+  final List<String> _categories = ['All', 'Fiction', 'Education', 'Non-Fiction', 'Children', 'History', 'Religion', 'Romance', 'Mystery'];
 
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
   void _selectCategory(int idx) => setState(() => _selectedCategoryIndex = idx);
 
   @override
   Widget build(BuildContext context) {
-    final recommended = _books.take(3).toList();
-    final popular = _books.sublist(3, 6);
-    final topSell = _books.sublist(6, 8);
-    final toRead = _books.sublist(8);
+    // current selected category
+    final selectedCategory = _categories[_selectedCategoryIndex];
+
+    // filter books based on category
+    final filteredBooks = selectedCategory == 'All'
+        ? _books
+        : _books.where((b) => b['category'] == selectedCategory).toList();
+
+    // sections derived from filtered list
+    final recommended = filteredBooks.take(3).toList();
+    final popular = filteredBooks.skip(3).take(3).toList();
+    final topSell = filteredBooks.skip(6).take(2).toList();
+    final toRead = filteredBooks.skip(8).take(2).toList();
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
           'Hi, Olumide 👋',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.search, color: Colors.black87), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.shopping_cart_outlined, color: Colors.black87), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.black87),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.black87),
+            onPressed: () {},
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Category chips
-            SizedBox(
-              height: 44,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: _categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
-                itemBuilder: (context, index) {
-                  final isSelected = index == _selectedCategoryIndex;
-                  return ChoiceChip(
-                    label: Text(
-                      _categories[index],
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Category chips
+              SizedBox(
+                height: 46,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  itemBuilder: (context, index) {
+                    final isSelected = index == _selectedCategoryIndex;
+                    return ChoiceChip(
+                      label: Text(
+                        _categories[index],
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black87,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    selected: isSelected,
-                    onSelected: (_) => _selectCategory(index),
-                    selectedColor: Colors.green.shade900,
-                    backgroundColor: Colors.grey.shade200,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 14),
-                  );
-                },
+                      selected: isSelected,
+                      onSelected: (_) => _selectCategory(index),
+                      selectedColor: Colors.green.shade900,
+                      backgroundColor: Colors.grey.shade200,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    );
+                  },
+                ),
               ),
-            ),
 
-            const SizedBox(height: 22),
+              const SizedBox(height: 20),
 
-            _section('Recommendation', recommended),
-            _section('Popular', popular),
-            _section('Top Sell', topSell),
-            _section('To Read', toRead),
+              // Sections dynamically shown if they contain books
+              if (recommended.isNotEmpty) ...[
+                _sectionTitle('Recommendation'),
+                const SizedBox(height: 10),
+                _horizontalList(recommended),
+                const SizedBox(height: 20),
+              ],
+              if (popular.isNotEmpty) ...[
+                _sectionTitle('Popular'),
+                const SizedBox(height: 10),
+                _horizontalList(popular),
+                const SizedBox(height: 20),
+              ],
+              if (topSell.isNotEmpty) ...[
+                _sectionTitle('Top Sell'),
+                const SizedBox(height: 10),
+                _horizontalList(topSell),
+                const SizedBox(height: 20),
+              ],
+              if (toRead.isNotEmpty) ...[
+                _sectionTitle('To Read'),
+                const SizedBox(height: 10),
+                _horizontalList(toRead),
+              ],
 
-            const SizedBox(height: 30),
-          ],
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.black87,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explore'),
+          BottomNavigationBarItem(icon: Icon(Icons.library_books), label: 'Library'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+        ],
       ),
     );
   }
 
-  Widget _section(String title, List<Map<String, String>> books) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 220, // reduced to fix overflow
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: books.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              final book = books[index];
-              return _bookCard(book);
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-      ],
+  Widget _sectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    );
+  }
+
+  Widget _horizontalList(List<Map<String, String>> books) {
+    return SizedBox(
+      height: 240,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: books.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 16),
+        itemBuilder: (context, index) {
+          final book = books[index];
+          return _bookCard(book);
+        },
+      ),
     );
   }
 
   Widget _bookCard(Map<String, String> book) {
-    return Container(
-      width: 140,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            spreadRadius: 2,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-            child: AspectRatio(
-              aspectRatio: 0.7, // keeps image height consistent
+    return GestureDetector(
+      onTap: () {
+        // Placeholder for future book detail page
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tapped on "${book['title']}"')),
+        );
+      },
+      child: Container(
+        width: 140,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              spreadRadius: 2,
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.asset(
                 book['image']!,
+                height: 150,
+                width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  color: Colors.grey.shade200,
-                  child: const Icon(Icons.image_not_supported, color: Colors.grey),
-                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(book['title'] ?? '',
-                    style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 2),
-                Text(book['author'] ?? '',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 4),
-                Text(book['price'] ?? '',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(book['title'] ?? '',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 4),
+                  Text(book['author'] ?? '',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 8),
+                  Text(book['price'] ?? '',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      )),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
