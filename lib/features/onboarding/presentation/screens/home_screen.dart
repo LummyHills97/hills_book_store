@@ -77,15 +77,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
       /// ✅ MAIN CONTENT
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 10),
+            
             /// CATEGORY FILTER
             SizedBox(
               height: 60,
               child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: _categories.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
@@ -121,6 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             : [],
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             categoryIcons[category],
@@ -148,7 +151,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
             /// RECOMMENDATION
             if (recommendation.isNotEmpty) ...[
-              _sectionTitle("Recommendation"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _sectionTitle("Recommendation"),
+              ),
               const SizedBox(height: 12),
               _buildHorizontalList(recommendation),
               const SizedBox(height: 22),
@@ -156,7 +162,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
             /// POPULAR
             if (popular.isNotEmpty) ...[
-              _sectionTitle("Popular"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _sectionTitle("Popular"),
+              ),
               const SizedBox(height: 12),
               _buildHorizontalList(popular),
               const SizedBox(height: 22),
@@ -164,7 +173,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
             /// TOP SELL
             if (topSell.isNotEmpty) ...[
-              _sectionTitle("Top Sell"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _sectionTitle("Top Sell"),
+              ),
               const SizedBox(height: 12),
               _buildHorizontalList(topSell),
               const SizedBox(height: 10),
@@ -207,32 +219,36 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHorizontalList(List<BookModel> booksList) {
     return SizedBox(
       height: 240,
-      child: ListView.separated(
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         itemCount: booksList.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
         itemBuilder: (context, index) {
           final book = booksList[index];
 
-          return BookCard(
-            title: book.title,
-            author: book.author,
-            imagePath: book.imagePath,
-            price: book.price,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BookDetailsScreen(
-                    title: book.title,
-                    author: book.author,
-                    imagePath: book.imagePath,
-                    price: book.price,
-                    description: book.description,
+          return Padding(
+            padding: EdgeInsets.only(right: index < booksList.length - 1 ? 14 : 0),
+            child: BookCard(
+              title: book.title,
+              author: book.author,
+              imagePath: book.imagePath,
+              price: book.price,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookDetailsScreen(
+                      title: book.title,
+                      author: book.author,
+                      imagePath: book.imagePath,
+                      price: book.price,
+                      description: book.description,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),
