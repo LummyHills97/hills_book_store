@@ -50,27 +50,29 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Hi, Olumide 👋',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black87),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.black87),
-            onPressed: () {},
-          ),
-        ],
-      ),
+  backgroundColor: Colors.white,
+  elevation: 0,
+  automaticallyImplyLeading: false, // REMOVE BACK ARROW
+  title: const Text(
+    'Hi, Olumide 👋',
+    style: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Colors.black87,
+    ),
+  ),
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.search, color: Colors.black87),
+      onPressed: () {},
+    ),
+    IconButton(
+      icon: const Icon(Icons.shopping_cart, color: Colors.black87),
+      onPressed: () {},
+    ),
+  ],
+),
+
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
