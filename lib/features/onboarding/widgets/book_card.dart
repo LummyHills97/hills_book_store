@@ -20,54 +20,63 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: SizedBox(
-        width: 140, // ✅ consistent card width
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ✅ Reduced height to avoid overflow
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
+      child: Card(
+        clipBehavior: Clip.hardEdge, // ✅ ensures rounded image clipping
+        child: SizedBox(
+          width: 140, // ✅ consistent
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
                 imagePath,
-                height: 160, // ✅ reduced from 180
+                height: 160,
                 width: 140,
                 fit: BoxFit.cover,
               ),
-            ),
-            const SizedBox(height: 6), // ✅ reduced spacing
 
-            Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 13, // ✅ reduced font
-                fontWeight: FontWeight.w600,
+              const SizedBox(height: 6),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
 
-            Text(
-              author,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11, // ✅ reduced
-                color: Colors.grey.shade600,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: Text(
+                  author,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
               ),
-            ),
 
-            const SizedBox(height: 4), // ✅ spacing tuned
+              const SizedBox(height: 4),
 
-            Text(
-              "₦${price.toStringAsFixed(2)}",
-              style: const TextStyle(
-                fontSize: 13, // ✅ reduced a bit
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1A5E20), // ✅ deep green
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: Text(
+                  "₦${price.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1A5E20),
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
