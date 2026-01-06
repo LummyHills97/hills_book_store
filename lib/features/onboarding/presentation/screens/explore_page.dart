@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/book_list_page.dart';
 import 'package:hills_book_store/features/onboarding/data/books_data.dart';
 import 'package:hills_book_store/features/onboarding/widgets/book_card.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/book_details_screen.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -12,6 +13,27 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
+  int _selectedCategoryIndex = 0;
+
+  final List<String> _categories = [
+    'All',
+    'Fiction',
+    'Mystery',
+    'Romance',
+    'Drama',
+    'History',
+    'Religion',
+  ];
+
+  final Map<String, IconData> categoryIcons = {
+    'All': Icons.apps_rounded,
+    'Fiction': Icons.auto_stories_rounded,
+    'Mystery': Icons.search_rounded,
+    'Romance': Icons.favorite_rounded,
+    'Drama': Icons.theater_comedy_rounded,
+    'History': Icons.menu_book_rounded,
+    'Religion': Icons.church_rounded,
+  };
 
   @override
   void dispose() {
@@ -21,6 +43,12 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedCategory = _categories[_selectedCategoryIndex];
+
+    final filteredBooks = selectedCategory == 'All'
+        ? books
+        : books.where((b) => b.category == selectedCategory).toList();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -40,28 +68,130 @@ class _ExplorePageState extends State<ExplorePage> {
           children: [
             // 🔍 SEARCH BAR
             _buildSearchBar(),
+            const SizedBox(height: 20),
+
+            // 🏷️ CATEGORY FILTER CHIPS
+            SizedBox(
+              height: 60,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: _categories.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final isSelected = index == _selectedCategoryIndex;
+                  final category = _categories[index];
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() => _selectedCategoryIndex = index);
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.green.shade900 : Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: isSelected
+                              ? Colors.green.shade900
+                              : Colors.grey.shade300,
+                          width: 1.4,
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: Colors.green.shade900.withOpacity(0.19),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                )
+                              ]
+                            : [],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            categoryIcons[category],
+                            size: 18,
+                            color: isSelected ? Colors.white : Colors.black87,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            category,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
             const SizedBox(height: 24),
 
-            // 🟦 CATEGORY GRID
-            _buildCategoriesSection(context),
-            const SizedBox(height: 32),
-
-            // 🔥 TRENDING BOOKS
-            _buildHorizontalBookSection(
-              title: "Trending Books",
-              books: books.take(5).toList(),
+            // 📚 FILTERED BOOKS GRID
+            Text(
+              selectedCategory == 'All' ? 'All Books' : selectedCategory,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.5,
+              ),
             ),
-            const SizedBox(height: 32),
-
-            // 🆕 NEW RELEASES
-            _buildHorizontalBookSection(
-              title: "New Releases",
-              books: books.reversed.take(5).toList(),
-            ),
-            const SizedBox(height: 32),
-
-            // 📚 EXPLORE MORE
-            _buildExploreMoreSection(),
+            const SizedBox(height: 14),
+            filteredBooks.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Text(
+                        "No books in this category",
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  )
+                : GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredBooks.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.68,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                    ),
+                    itemBuilder: (context, index) {
+                      final book = filteredBooks[index];
+                      return BookCard(
+                        title: book.title,
+                        author: book.author,
+                        imagePath: book.imagePath,
+                        price: book.price,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BookDetailsScreen(
+                                title: book.title,
+                                author: book.author,
+                                imagePath: book.imagePath,
+                                price: book.price,
+                                description: book.description,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
             const SizedBox(height: 20),
           ],
         ),
@@ -92,195 +222,6 @@ class _ExplorePageState extends State<ExplorePage> {
           }
         },
       ),
-    );
-  }
-
-  /// 🟦 Categories Section
-  Widget _buildCategoriesSection(BuildContext context) {
-    final categories = [
-      "Fiction",
-      "Mystery",
-      "Romance",
-      "Drama",
-      "History",
-      "Religion",
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Categories",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
-          ),
-        ),
-        const SizedBox(height: 14),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: categories.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1.4,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          itemBuilder: (context, index) {
-            return _buildCategoryCard(context, categories[index]);
-          },
-        ),
-      ],
-    );
-  }
-
-  /// Category Card
-  Widget _buildCategoryCard(BuildContext context, String categoryName) {
-    return InkWell(
-      onTap: () {
-        // Filter books by category and convert to Map format
-        final categoryBooks = books
-            .where((book) => book.category == categoryName)
-            .map((book) => {
-                  'title': book.title,
-                  'author': book.author,
-                  'imagePath': book.imagePath,
-                  'price': book.price,
-                  'category': book.category,
-                  'description': book.description,
-                })
-            .toList();
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BookListPage(
-              category: categoryName,
-              books: categoryBooks,
-            ),
-          ),
-        );
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300, width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            categoryName,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.3,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// 📚 Horizontal Book Section (Trending, New Releases)
-  Widget _buildHorizontalBookSection({
-    required String title,
-    required List<dynamic> books,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
-          ),
-        ),
-        const SizedBox(height: 14),
-        SizedBox(
-          height: 240,
-          child: books.isEmpty
-              ? Center(
-                  child: Text(
-                    "No books available",
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                )
-              : ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: books.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 14),
-                  itemBuilder: (context, index) {
-                    final book = books[index];
-                    return SizedBox(
-                      width: 140,
-                      child: BookCard(
-                        title: book.title,
-                        author: book.author,
-                        imagePath: book.imagePath,
-                        price: book.price,
-                        onTap: () {
-                          // Navigate to book details
-                        },
-                      ),
-                    );
-                  },
-                ),
-        ),
-      ],
-    );
-  }
-
-  /// 📖 Explore More Section (Grid)
-  Widget _buildExploreMoreSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Explore More",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
-          ),
-        ),
-        const SizedBox(height: 14),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: books.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.68,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-          ),
-          itemBuilder: (context, index) {
-            final book = books[index];
-            return BookCard(
-              title: book.title,
-              author: book.author,
-              imagePath: book.imagePath,
-              price: book.price,
-              onTap: () {
-                // Navigate to book details
-              },
-            );
-          },
-        ),
-      ],
     );
   }
 }
