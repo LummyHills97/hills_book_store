@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/create_account_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/home_screen.dart'; // ✅ Import your Home Screen
+import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // ✅ Navigate with Slide + Fade Transition
+                    // ✅ Navigate to MainNavigationScreen with Slide + Fade Transition
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
@@ -129,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Duration(milliseconds: 600),
                         pageBuilder:
                             (context, animation, secondaryAnimation) =>
-                                const HomeScreen(),
+                                const MainNavigationScreen(), // ✅ Changed to MainNavigationScreen
                         transitionsBuilder: (context, animation,
                             secondaryAnimation, child) {
                           const begin = Offset(1.0, 0.0);
