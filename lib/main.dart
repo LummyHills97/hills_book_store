@@ -5,6 +5,7 @@ import 'package:hills_book_store/features/onboarding/presentation/bloc/onboardin
 import 'package:hills_book_store/features/onboarding/presentation/screens/explore_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 
 void main() {
@@ -34,6 +35,7 @@ class HillsBookStore extends StatelessWidget {
           '/': (context) => const OnboardingScreen(),
           '/login': (context) => const LoginScreen(),
           '/forgot-password': (context) => const ForgotPasswordScreen(),
+          '/home': (context) => const MainNavigationScreen(), // ✅ Main navigation with all 4 tabs
           '/explore': (context) => const ExplorePage(),
         },
       ),
