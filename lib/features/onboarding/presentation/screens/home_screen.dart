@@ -12,10 +12,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Sample data - you can make these dynamic later
-    final continueReading = books.take(1).toList();
+    // Sample data
+    final continueReading = books.isNotEmpty ? [books.first] : [];
     final newReleases = books.where((b) => b.category == 'Fiction').take(6).toList();
     final trending = books.where((b) => b.category == 'Drama').take(6).toList();
     final forYou = books.where((b) => b.category == 'Romance').take(6).toList();
@@ -61,7 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.search, color: Colors.black87, size: 26),
-                onPressed: () {},
+                onPressed: () {
+                  showSearch(
+                    context: context,
+                    delegate: BookSearchDelegate(),
+                  );
+                },
               ),
               IconButton(
                 icon: Stack(
@@ -72,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       top: 0,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
@@ -93,7 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Cart feature coming soon!')),
+                  );
+                },
               ),
               const SizedBox(width: 8),
             ],
@@ -123,33 +140,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
 
                 // New Releases
-                _buildLargeSection(
-                  title: 'New Releases',
-                  subtitle: 'Fresh stories just for you',
-                  books: newReleases,
-                ),
-                const SizedBox(height: 32),
+                if (newReleases.isNotEmpty) ...[
+                  _buildLargeSection(
+                    title: 'New Releases',
+                    subtitle: 'Fresh stories just for you',
+                    books: newReleases,
+                  ),
+                  const SizedBox(height: 32),
+                ],
 
-                // Editorial Picks (Featured Collections)
-                _buildEditorialSection(editorialPicks),
-                const SizedBox(height: 32),
+                // Editorial Picks
+                if (editorialPicks.isNotEmpty) ...[
+                  _buildEditorialSection(editorialPicks),
+                  const SizedBox(height: 32),
+                ],
 
                 // Trending Now
-                _buildSection(
-                  title: 'Trending Now',
-                  subtitle: 'What everyone is reading',
-                  books: trending,
-                  showBadge: true,
-                ),
-                const SizedBox(height: 32),
+                if (trending.isNotEmpty) ...[
+                  _buildSection(
+                    title: 'Trending Now',
+                    subtitle: 'What everyone is reading',
+                    books: trending,
+                    showBadge: true,
+                  ),
+                  const SizedBox(height: 32),
+                ],
 
                 // Personalized For You
-                _buildSection(
-                  title: 'For You',
-                  subtitle: 'Based on your reading history',
-                  books: forYou,
-                ),
-                const SizedBox(height: 32),
+                if (forYou.isNotEmpty) ...[
+                  _buildSection(
+                    title: 'For You',
+                    subtitle: 'Based on your reading history',
+                    books: forYou,
+                  ),
+                  const SizedBox(height: 32),
+                ],
 
                 // Quick Categories
                 _buildQuickCategories(),
@@ -162,7 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Reading Goal Card
   Widget _buildReadingGoalCard() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -233,7 +257,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Continue Reading Section
   Widget _buildContinueReading(BookModel book) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,6 +301,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 60,
                     height: 90,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 60,
+                        height: 90,
+                        color: Colors.grey.shade300,
+                        child: Icon(Icons.book, color: Colors.grey.shade600),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -337,7 +368,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Large Book Section
   Widget _buildLargeSection({
     required String title,
     required String subtitle,
@@ -413,7 +443,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Regular Section
   Widget _buildSection({
     required String title,
     required String subtitle,
@@ -511,6 +540,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.local_fire_department, color: Colors.white, size: 12),
                               const SizedBox(width: 4),
@@ -536,7 +566,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Editorial Section
   Widget _buildEditorialSection(List<BookModel> books) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -627,6 +656,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 80,
                             height: 120,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: 80,
+                                height: 120,
+                                color: Colors.grey.shade300,
+                                child: Icon(Icons.book, color: Colors.grey.shade600),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -651,6 +688,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontSize: 13,
                                   color: Colors.grey.shade700,
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 10),
                               Container(
@@ -683,7 +722,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Quick Categories
   Widget _buildQuickCategories() {
     final categories = [
       {'name': 'Fiction', 'icon': Icons.auto_stories, 'color': Colors.blue},
@@ -719,7 +757,11 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final category = categories[index];
               return InkWell(
-                onTap: () {},
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${category['name']} category coming soon!')),
+                  );
+                },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.all(16),
@@ -738,11 +780,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: 24,
                       ),
                       const SizedBox(width: 12),
-                      Text(
-                        category['name'] as String,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: Text(
+                          category['name'] as String,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -753,6 +797,122 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// Simple Search Delegate
+class BookSearchDelegate extends SearchDelegate<BookModel?> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    final results = books.where((book) {
+      final q = query.toLowerCase();
+      return book.title.toLowerCase().contains(q) ||
+          book.author.toLowerCase().contains(q) ||
+          book.category.toLowerCase().contains(q);
+    }).toList();
+
+    if (results.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
+            const SizedBox(height: 16),
+            Text(
+              'No results found',
+              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.68,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+      ),
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        final book = results[index];
+        return BookCard(
+          title: book.title,
+          author: book.author,
+          imagePath: book.imagePath,
+          price: book.price,
+          onTap: () {
+            close(context, book);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BookDetailsScreen(
+                  title: book.title,
+                  author: book.author,
+                  imagePath: book.imagePath,
+                  price: book.price,
+                  description: book.description,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestions = query.isEmpty
+        ? ['Fiction', 'Romance', 'Mystery', 'Drama', 'Nigerian Literature']
+        : books
+            .where((book) {
+              final q = query.toLowerCase();
+              return book.title.toLowerCase().contains(q) ||
+                  book.author.toLowerCase().contains(q);
+            })
+            .take(5)
+            .map((b) => b.title)
+            .toList();
+
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        final suggestion = suggestions[index];
+        return ListTile(
+          leading: const Icon(Icons.search),
+          title: Text(suggestion),
+          onTap: () {
+            query = suggestion;
+            showResults(context);
+          },
+        );
+      },
     );
   }
 }
