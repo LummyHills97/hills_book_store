@@ -176,8 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 32),
                 ],
 
-                // Quick Categories
-                _buildQuickCategories(),
+                // Top Charts
+                _buildTopChartsSection(),
                 const SizedBox(height: 24),
               ],
             ),
@@ -722,72 +722,211 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildQuickCategories() {
-    final categories = [
-      {'name': 'Fiction', 'icon': Icons.auto_stories, 'color': Colors.blue},
-      {'name': 'Romance', 'icon': Icons.favorite, 'color': Colors.red},
-      {'name': 'Mystery', 'icon': Icons.search, 'color': Colors.purple},
-      {'name': 'Drama', 'icon': Icons.theater_comedy, 'color': Colors.orange},
-    ];
+  Widget _buildTopChartsSection() {
+    // Get top 10 books (you can customize this logic)
+    final topBooks = books.take(10).toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.amber.shade700, Colors.orange.shade600],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.trending_up, color: Colors.white, size: 16),
+                    SizedBox(width: 6),
+                    Text(
+                      'TOP CHARTS',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
           const Text(
-            'Browse by Genre',
+            'Most Popular Right Now',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: 14),
-          GridView.builder(
+          const SizedBox(height: 4),
+          Text(
+            'What readers are buying this week',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          // Top Charts List
+          ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2.5,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-            ),
-            itemCount: categories.length,
+            itemCount: topBooks.length,
+            separatorBuilder: (_, __) => Divider(height: 24, color: Colors.grey.shade200),
             itemBuilder: (context, index) {
-              final category = categories[index];
+              final book = topBooks[index];
+              final rank = index + 1;
+              
+              // Colors for top 3
+              Color rankColor = Colors.grey.shade700;
+              if (rank == 1) rankColor = Colors.amber.shade700;
+              if (rank == 2) rankColor = Colors.grey.shade600;
+              if (rank == 3) rankColor = Colors.orange.shade700;
+
               return InkWell(
                 onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${category['name']} category coming soon!')),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BookDetailsScreen(
+                        title: book.title,
+                        author: book.author,
+                        imagePath: book.imagePath,
+                        price: book.price,
+                        description: book.description,
+                      ),
+                    ),
                   );
                 },
                 borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: (category['color'] as Color).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: (category['color'] as Color).withOpacity(0.3),
-                    ),
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
                     children: [
-                      Icon(
-                        category['icon'] as IconData,
-                        color: category['color'] as Color,
-                        size: 24,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          category['name'] as String,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                      // Rank Number
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: rank <= 3 
+                              ? rankColor.withOpacity(0.15)
+                              : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$rank',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              color: rankColor,
+                            ),
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 14),
+                      
+                      // Book Cover
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.asset(
+                          book.imagePath,
+                          width: 50,
+                          height: 75,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 50,
+                              height: 75,
+                              color: Colors.grey.shade300,
+                              child: Icon(Icons.book, color: Colors.grey.shade600, size: 24),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      
+                      // Book Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    book.title,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.3,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              book.author,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    book.category,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  '₦${book.price.toStringAsFixed(0)}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green.shade900,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      
+                      // Arrow Icon
+                      Icon(
+                        Icons.chevron_right,
+                        color: Colors.grey.shade400,
+                        size: 24,
                       ),
                     ],
                   ),
