@@ -1,75 +1,217 @@
 import 'package:flutter/material.dart';
 
-class LibraryPage extends StatelessWidget {
+class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
 
+  @override
+  State<LibraryPage> createState() => _LibraryPageState();
+}
+
+class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  String selectedCategory = 'All';
+  
   static const bgColor = Color(0xFFF7F7F9);
   static const accent = Color(0xFF5E5CE6);
+  
+  // Mock data - replace with your actual data management
+  final List<Map<String, dynamic>> currentlyReading = [
+    {
+      'title': 'Half of a Yellow Sun',
+      'author': 'Chimamanda Ngozi Adichie',
+      'progress': 0.45,
+      'coverColor': Color(0xFFFFB84D),
+    },
+    {
+      'title': 'Americanah',
+      'author': 'Chimamanda Ngozi Adichie',
+      'progress': 0.23,
+      'coverColor': Color(0xFF4ECDC4),
+    },
+    {
+      'title': 'Things Fall Apart',
+      'author': 'Chinua Achebe',
+      'progress': 0.78,
+      'coverColor': Color(0xFFFF6B6B),
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgColor,
-      appBar: AppBar(
-        backgroundColor: bgColor,
-        elevation: 0,
+      body: CustomScrollView(
+        slivers: [
+          _buildAppBar(),
+          SliverToBoxAdapter(child: const SizedBox(height: 16)),
+          _buildReadingStats(),
+          SliverToBoxAdapter(child: const SizedBox(height: 24)),
+          _buildCurrentlyReading(),
+          SliverToBoxAdapter(child: const SizedBox(height: 32)),
+          _buildTabBar(),
+          _buildTabContent(),
+          SliverToBoxAdapter(child: const SizedBox(height: 80)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return SliverAppBar(
+      expandedHeight: 120,
+      floating: false,
+      pinned: true,
+      backgroundColor: bgColor,
+      elevation: 0,
+      flexibleSpace: FlexibleSpaceBar(
         title: const Text(
-          'Library',
+          'My Library',
           style: TextStyle(
+            color: Colors.black,
             fontWeight: FontWeight.w800,
-            fontSize: 26,
+            fontSize: 28,
           ),
         ),
+        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _heroCard(),
-            const SizedBox(height: 32),
-            _continueReadingSection(),
-            const SizedBox(height: 32),
-            _statsSection(),
-            const SizedBox(height: 32),
-            _shelfSection(),
-            const SizedBox(height: 40),
-            _cta(context),
-          ],
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search, color: Colors.black),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: const Icon(Icons.filter_list, color: Colors.black),
+          onPressed: () => _showFilterSheet(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReadingStats() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF5E5CE6), Color(0xFF7D7AFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: accent.withOpacity(0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Reading Streak',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        '7 days 🔥',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: const [
+                      Text(
+                        'Today',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        '45 min',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  _buildMiniStat('12', 'Books Read', Icons.menu_book),
+                  const SizedBox(width: 12),
+                  _buildMiniStat('2.5k', 'Pages', Icons.description),
+                  const SizedBox(width: 12),
+                  _buildMiniStat('48h', 'Time', Icons.schedule),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // HERO
-  Widget _heroCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+  Widget _buildMiniStat(String value, String label, IconData icon) {
+    return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: const LinearGradient(
-            colors: [
-              Color(0xFF5E5CE6),
-              Color(0xFF7D7AFF),
-            ],
-          ),
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
+            Icon(icon, color: Colors.white, size: 20),
+            const SizedBox(height: 4),
             Text(
-              'You’re reading today',
-              style: TextStyle(color: Colors.white70),
-            ),
-            SizedBox(height: 8),
-            Text(
-              '45 minutes',
-              style: TextStyle(
+              value,
+              style: const TextStyle(
                 color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 11,
               ),
             ),
           ],
@@ -78,177 +220,289 @@ class LibraryPage extends StatelessWidget {
     );
   }
 
-  // CONTINUE READING
-  Widget _continueReadingSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sectionTitle('Continue Reading'),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 160,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (_, i) => _readingCard(),
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
-            itemCount: 3,
+  Widget _buildCurrentlyReading() {
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Continue Reading',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('See All'),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 200,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              scrollDirection: Axis.horizontal,
+              itemCount: currentlyReading.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final book = currentlyReading[index];
+                return _buildReadingCard(
+                  book['title'],
+                  book['author'],
+                  book['progress'],
+                  book['coverColor'],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _readingCard() {
+  Widget _buildReadingCard(String title, String author, double progress, Color color) {
     return Container(
-      width: 280,
-      padding: const EdgeInsets.all(16),
+      width: 160,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            blurRadius: 20,
             color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Half of a Yellow Sun',
-            style: TextStyle(fontWeight: FontWeight.w700),
+          Container(
+            height: 110,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.menu_book,
+                size: 40,
+                color: Colors.white.withOpacity(0.5),
+              ),
+            ),
           ),
-          const Spacer(),
-          LinearProgressIndicator(
-            value: 0.45,
-            color: accent,
-            backgroundColor: Colors.grey.shade200,
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  author,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.grey[200],
+                    color: accent,
+                    minHeight: 6,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${(progress * 100).toInt()}% completed',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
-          const Text('45% completed'),
         ],
       ),
     );
   }
 
-  // STATS
-  Widget _statsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sectionTitle('Your Library'),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: const [
-              _MiniStat(label: 'Read', value: '12'),
-              SizedBox(width: 12),
-              _MiniStat(label: 'Reading', value: '3'),
-              SizedBox(width: 12),
-              _MiniStat(label: 'Saved', value: '8'),
+  Widget _buildTabBar() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: TabBar(
+            controller: _tabController,
+            indicator: BoxDecoration(
+              color: accent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.grey[600],
+            labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+            tabs: const [
+              Tab(text: 'All Books'),
+              Tab(text: 'Favorites'),
+              Tab(text: 'Finished'),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
-  // SHELF
-  Widget _shelfSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sectionTitle('Your Shelf'),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 190,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (_, i) => _bookCover(),
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemCount: 6,
-          ),
+  Widget _buildTabContent() {
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 600,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildBookGrid(),
+            _buildBookGrid(),
+            _buildBookGrid(),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _bookCover() {
+  Widget _buildBookGrid() {
+    // Mock books - replace with your actual book data
+    return GridView.builder(
+      padding: const EdgeInsets.all(20),
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 0.6,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: 9,
+      itemBuilder: (context, index) {
+        return _buildBookCover(index);
+      },
+    );
+  }
+
+  Widget _buildBookCover(int index) {
+    final colors = [
+      Color(0xFFFF6B6B),
+      Color(0xFF4ECDC4),
+      Color(0xFFFFB84D),
+      Color(0xFF95E1D3),
+      Color(0xFFF38181),
+      Color(0xFFAA96DA),
+    ];
+    
     return Container(
-      width: 120,
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: colors[index % colors.length],
         borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-    );
-  }
-
-  // CTA
-  Widget _cta(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(12),
+          child: Center(
+            child: Icon(
+              Icons.menu_book,
+              size: 32,
+              color: Colors.white.withOpacity(0.5),
+            ),
           ),
         ),
-        onPressed: () {},
-        child: const Text(
-          'Browse Books',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
       ),
     );
   }
 
-  Widget _sectionTitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-    );
-  }
-}
-
-// MINI STAT
-class _MiniStat extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _MiniStat({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
+  void _showFilterSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 22,
+            const Text(
+              'Filter by Category',
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(label),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: ['All', 'Fiction', 'Mystery', 'Romance', 'Drama', 'History', 'Religion']
+                  .map((category) => FilterChip(
+                        label: Text(category),
+                        selected: selectedCategory == category,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedCategory = category;
+                          });
+                          Navigator.pop(context);
+                        },
+                        selectedColor: accent,
+                        labelStyle: TextStyle(
+                          color: selectedCategory == category
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ))
+                  .toList(),
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
