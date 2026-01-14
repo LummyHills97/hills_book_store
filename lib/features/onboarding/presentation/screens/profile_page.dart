@@ -1251,7 +1251,7 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
           color: Colors.grey[400],
         ),
       ),
-    );
+    ); 
   }
 
   void _showDeleteAccountDialog() {
