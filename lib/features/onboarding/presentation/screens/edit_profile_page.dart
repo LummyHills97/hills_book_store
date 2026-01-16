@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/Providers/profile_provider.dart';
 import 'package:provider/provider.dart';
+
+import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_avatar.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_form_card.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_text_field.dart';
+
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});

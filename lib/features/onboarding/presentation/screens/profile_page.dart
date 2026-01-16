@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/Providers/profile_provider.dart';
+import 'package:provider/provider.dart';
+
+import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
+import 'package:hills_book_store/features/onboarding/widgets/profile_avatar.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/about_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/edit_profile_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/help_center_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/language_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/privacy_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/storage_page.dart';
-import 'package:provider/provider.dart';
-import 'package:hills_book_store/features/onboarding/widgets/profile_avatar.dart';
 
-import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart' hide ProfileProvider;
+
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
