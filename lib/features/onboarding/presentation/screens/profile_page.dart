@@ -10,8 +10,6 @@ import 'package:hills_book_store/features/onboarding/presentation/screens/langua
 import 'package:hills_book_store/features/onboarding/presentation/screens/privacy_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/storage_page.dart';
 
-
-
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -26,33 +24,49 @@ class ProfilePage extends StatelessWidget {
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 280,
+                expandedHeight: 120,
                 floating: false,
                 pinned: true,
-                backgroundColor: Colors.white,
+                backgroundColor: const Color(0xFFF5F6FA),
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
                   title: const Text(
                     'Profile',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 28,
                     ),
                   ),
-                  background: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
+                  titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+              // Profile Header Card
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
                         colors: [Color(0xFF5E5CE6), Color(0xFF8E8DFF)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF5E5CE6).withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 60),
                         const ProfileAvatar(radius: 55),
                         const SizedBox(height: 16),
                         Text(
@@ -77,9 +91,11 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
 
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -213,7 +229,7 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ]),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 80),
                     ],
                   ),
                 ),
