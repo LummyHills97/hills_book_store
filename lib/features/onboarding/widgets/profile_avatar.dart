@@ -31,7 +31,7 @@ class ProfileAvatar extends StatelessWidget {
             padding: const EdgeInsets.all(3),
             child: const CircleAvatar(
               backgroundImage: AssetImage(
-                'assets/images/profile.jpg',
+                'assets/images/covers/hills.jpg',
               ),
             ),
           ),
