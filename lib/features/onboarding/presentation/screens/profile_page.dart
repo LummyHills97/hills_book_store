@@ -1,208 +1,226 @@
 import 'package:flutter/material.dart';
+import 'package:hills_book_store/features/onboarding/Providers/profile_provider.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/about_page.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/edit_profile_page.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/help_center_page.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/language_page.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/privacy_page.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/storage_page.dart';
+import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_avatar.dart';
+
+import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart' hide ProfileProvider;
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
-      body: CustomScrollView(
-        slivers: [
-          // Collapsing header with profile info
-          SliverAppBar(
-            expandedHeight: 280,
-            floating: false,
-            pinned: true,
-            backgroundColor: Colors.white,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: const Text(
-                'Profile',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF5E5CE6), Color(0xFF8E8DFF)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    SizedBox(height: 60),
-                    ProfileAvatar(radius: 55),
-                    SizedBox(height: 16),
-                    Text(
-                      'Akinnuli Olumide',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Book Enthusiast',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return Consumer<ProfileProvider>(
+      builder: (context, profileProvider, child) {
+        final profile = profileProvider.profile;
 
-          // Profile content
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Account section
-                  const Text(
-                    'Account',
+        return Scaffold(
+          backgroundColor: const Color(0xFFF5F6FA),
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 280,
+                floating: false,
+                pinned: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: const Text(
+                    'Profile',
                     style: TextStyle(
+                      color: Colors.black,
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard([
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.person,
-                      title: 'Edit Profile',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EditProfilePage(),
+                  background: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF5E5CE6), Color(0xFF8E8DFF)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 60),
+                        const ProfileAvatar(radius: 55),
+                        const SizedBox(height: 16),
+                        Text(
+                          profile.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                        );
-                      },
-                    ),
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.notifications,
-                      title: 'Notifications',
-                      trailing: Switch(
-                        value: true,
-                        onChanged: (val) {},
-                        activeColor: const Color(0xFF5E5CE6),
-                      ),
-                    ),
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.lock,
-                      title: 'Privacy',
-                      onTap: () {
-                        // TODO: Navigate to Privacy page
-                      },
-                    ),
-                  ]),
-
-                  const SizedBox(height: 24),
-
-                  // Preferences section
-                  const Text(
-                    'Preferences',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          profile.location,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard([
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.dark_mode,
-                      title: 'Dark Mode',
-                      trailing: Switch(
-                        value: false,
-                        onChanged: (val) {},
-                        activeColor: const Color(0xFF5E5CE6),
-                      ),
-                    ),
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.language,
-                      title: 'Language',
-                      subtitle: 'English',
-                      onTap: () {
-                        // TODO: Navigate to Language selection page
-                      },
-                    ),
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.storage,
-                      title: 'Storage',
-                      subtitle: '2.4 GB used',
-                      onTap: () {
-                        // TODO: Navigate to Storage management page
-                      },
-                    ),
-                  ]),
-
-                  const SizedBox(height: 24),
-
-                  // Support section
-                  const Text(
-                    'Support',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard([
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.help,
-                      title: 'Help Center',
-                      onTap: () {
-                        // TODO: Navigate to Help Center page
-                      },
-                    ),
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.info,
-                      title: 'About',
-                      onTap: () {
-                        // TODO: Navigate to About page
-                      },
-                    ),
-                    _buildMenuItem(
-                      context: context,
-                      icon: Icons.logout,
-                      title: 'Log Out',
-                      textColor: const Color(0xFFFF6B6B),
-                      onTap: () {
-                        // TODO: Implement logout functionality
-                        _showLogoutDialog(context);
-                      },
-                    ),
-                  ]),
-
-                  const SizedBox(height: 32),
-                ],
+                ),
               ),
-            ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Account',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuCard([
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.person,
+                          title: 'Edit Profile',
+                          subtitle: 'Update your personal information',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EditProfilePage(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.lock,
+                          title: 'Privacy & Security',
+                          subtitle: 'Manage your privacy settings',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PrivacyPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
+
+                      const SizedBox(height: 24),
+
+                      const Text(
+                        'Preferences',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuCard([
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.language,
+                          title: 'Language',
+                          subtitle: 'English',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LanguagePage(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.storage,
+                          title: 'Storage',
+                          subtitle: 'Manage app storage',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const StoragePage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
+
+                      const SizedBox(height: 24),
+
+                      const Text(
+                        'Support',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuCard([
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.help,
+                          title: 'Help Center',
+                          subtitle: 'FAQs and support',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HelpCenterPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.info,
+                          title: 'About',
+                          subtitle: 'Version 1.0.0',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AboutPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildMenuItem(
+                          context: context,
+                          icon: Icons.logout,
+                          title: 'Log Out',
+                          textColor: const Color(0xFFFF6B6B),
+                          onTap: () {
+                            _showLogoutDialog(context);
+                          },
+                        ),
+                      ]),
+
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -219,9 +237,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        children: items,
-      ),
+      child: Column(children: items),
     );
   }
 
@@ -284,10 +300,7 @@ class ProfilePage extends StatelessWidget {
               if (trailing != null)
                 trailing
               else if (onTap != null)
-                Icon(
-                  Icons.chevron_right,
-                  color: Colors.grey[400],
-                ),
+                Icon(Icons.chevron_right, color: Colors.grey[400]),
             ],
           ),
         ),
@@ -316,7 +329,9 @@ class ProfilePage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                // TODO: Implement actual logout logic
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Logged out successfully')),
+                );
               },
               child: const Text(
                 'Log Out',

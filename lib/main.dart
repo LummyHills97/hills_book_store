@@ -1,44 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hills_book_store/core/theme/theme.dart';
-import 'package:hills_book_store/features/onboarding/presentation/bloc/onboarding_cubit.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/explore_page.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen';
-import 'features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/home_screen.dart';
+
+// Import your blocs here
+// import 'package:hills_book_store/features/auth/bloc/auth_bloc.dart';
+// import 'package:hills_book_store/features/cart/bloc/cart_bloc.dart';
 
 void main() {
-  runApp(const HillsBookStore());
+  runApp(const MyApp());
 }
 
-class HillsBookStore extends StatelessWidget {
-  const HillsBookStore({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
-        BlocProvider(create: (_) => OnboardingCubit()),
+        /// ----------------------------
+        /// Provider (ChangeNotifier)
+        /// ----------------------------
+        ChangeNotifierProvider(
+          create: (_) => ProfileProvider(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Hills Book Store',
-        
-        // ✅ Use your custom theme
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system, // Auto switch based on system setting
-        
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const OnboardingScreen(),
-          '/login': (context) => const LoginScreen(),
-          '/forgot-password': (context) => const ForgotPasswordScreen(),
-          '/home': (context) => const MainNavigationScreen(), // ✅ Main navigation with all 4 tabs
-          '/explore': (context) => const ExplorePage(),
-        },
+
+      /// Bloc providers should be INSIDE MultiProvider
+      child: MultiBlocProvider(
+        providers: [
+          /// ----------------------------
+          /// Bloc Providers
+          /// (Add at least one, never empty)
+          /// ----------------------------
+
+          // BlocProvider(
+          //   create: (_) => AuthBloc(),
+          // ),
+
+          // BlocProvider(
+          //   create: (_) => CartBloc(),
+          // ),
+        ],
+
+        child: const AppView(),
       ),
+    );
+  }
+}
+
+/// Separate widget keeps main.dart clean
+class AppView extends StatelessWidget {
+  const AppView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Hills Book Store',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5E5CE6),
+        ),
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
     );
   }
 }

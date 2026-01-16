@@ -6,6 +6,7 @@ class ProfileTextField extends StatelessWidget {
   final IconData icon;
   final int maxLines;
   final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
 
   const ProfileTextField({
     super.key,
@@ -14,6 +15,7 @@ class ProfileTextField extends StatelessWidget {
     required this.icon,
     this.maxLines = 1,
     this.keyboardType,
+    this.validator,
   });
 
   @override
@@ -22,6 +24,7 @@ class ProfileTextField extends StatelessWidget {
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontWeight: FontWeight.w500),
@@ -36,6 +39,20 @@ class ProfileTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(
             color: Color(0xFF5E5CE6),
+            width: 1.5,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFFFF6B6B),
+            width: 1.5,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFFFF6B6B),
             width: 1.5,
           ),
         ),
