@@ -15,6 +15,10 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
   int _selectedCategoryIndex = 0;
   late TabController _tabController;
 
+  // Track joined communities and challenges
+  Set<String> joinedCommunities = {};
+  Set<String> joinedChallenges = {};
+
   final List<String> _categories = [
     'All',
     'Fiction',
@@ -120,7 +124,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // BOOKS TAB
+  // BOOKS TAB (unchanged)
   Widget _buildBooksTab() {
     final selectedCategory = _categories[_selectedCategoryIndex];
     final filteredBooks = selectedCategory == 'All'
@@ -132,14 +136,11 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Search Bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: _buildSearchBar(),
           ),
           const SizedBox(height: 20),
-
-          // Category Filter Chips
           SizedBox(
             height: 60,
             child: ListView.separated(
@@ -200,8 +201,6 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             ),
           ),
           const SizedBox(height: 24),
-
-          // Filtered Books Grid
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -288,10 +287,11 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // COMMUNITIES TAB
+  // COMMUNITIES TAB - UPDATED with join functionality
   Widget _buildCommunitiesTab() {
     final communities = [
       {
+        'id': 'fiction_lovers',
         'name': 'Fiction Lovers Club',
         'members': '1.2k',
         'icon': Icons.auto_stories,
@@ -299,6 +299,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'description': 'Join fellow fiction enthusiasts',
       },
       {
+        'id': 'mystery_society',
         'name': 'Mystery Readers Society',
         'members': '856',
         'icon': Icons.search,
@@ -306,6 +307,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'description': 'Solve mysteries together',
       },
       {
+        'id': 'romance_club',
         'name': 'Romance Book Club',
         'members': '2.1k',
         'icon': Icons.favorite,
@@ -313,6 +315,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'description': 'Share your favorite love stories',
       },
       {
+        'id': 'nigerian_lit',
         'name': 'Nigerian Literature',
         'members': '945',
         'icon': Icons.public,
@@ -323,12 +326,14 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
 
     final challenges = [
       {
+        'id': 'challenge_2026',
         'title': '2026 Reading Challenge',
         'participants': '3.5k',
         'progress': 0.42,
         'target': '50 books',
       },
       {
+        'id': 'feb_sprint',
         'title': 'February Book Sprint',
         'participants': '892',
         'progress': 0.65,
@@ -385,7 +390,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // BOOKSTORES TAB
+  // BOOKSTORES TAB - unchanged for now, will update with map
   Widget _buildBookstoresTab() {
     final bookstores = [
       {
@@ -427,7 +432,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
 
     return Column(
       children: [
-        // Map Placeholder
+        // Map Placeholder - Will add actual map integration
         Container(
           height: 250,
           color: Colors.grey.shade200,
@@ -463,7 +468,13 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                 right: 16,
                 child: FloatingActionButton.small(
                   backgroundColor: Colors.white,
-                  onPressed: () {},
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Getting your location...'),
+                      ),
+                    );
+                  },
                   child: Icon(Icons.my_location, color: Colors.green.shade900),
                 ),
               ),
@@ -485,7 +496,6 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // Search Bar Widget
   Widget _buildSearchBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -511,8 +521,10 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // Challenge Card
   Widget _buildChallengeCard(Map<String, dynamic> challenge) {
+    final challengeId = challenge['id'] as String;
+    final isJoined = joinedChallenges.contains(challengeId);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -558,6 +570,45 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                   ],
                 ),
               ),
+              // Join/Joined Button
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (isJoined) {
+                      joinedChallenges.remove(challengeId);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Left ${challenge['title']}'),
+                          backgroundColor: Colors.orange,
+                        ),
+                      );
+                    } else {
+                      joinedChallenges.add(challengeId);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Joined ${challenge['title']}!'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    }
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isJoined ? Colors.white30 : Colors.white,
+                  foregroundColor: isJoined ? Colors.white : Colors.orange.shade600,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  isJoined ? 'Joined ✓' : 'Join',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -584,8 +635,10 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // Community Card
   Widget _buildCommunityCard(Map<String, dynamic> community) {
+    final communityId = community['id'] as String;
+    final isJoined = joinedCommunities.contains(communityId);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -653,18 +706,38 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                if (isJoined) {
+                  joinedCommunities.remove(communityId);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Left ${community['name']}'),
+                      backgroundColor: Colors.grey,
+                    ),
+                  );
+                } else {
+                  joinedCommunities.add(communityId);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Joined ${community['name']}!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              });
+            },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade900,
+              backgroundColor: isJoined ? Colors.grey.shade300 : Colors.green.shade900,
+              foregroundColor: isJoined ? Colors.black87 : Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
-            child: const Text(
-              'Join',
-              style: TextStyle(
-                color: Colors.white,
+            child: Text(
+              isJoined ? 'Joined ✓' : 'Join',
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -675,7 +748,6 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // Bookstore Card
   Widget _buildBookstoreCard(Map<String, dynamic> store) {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -756,7 +828,13 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Opening directions to ${store['name']}...'),
+                ),
+              );
+            },
             icon: Icon(Icons.directions, color: Colors.green.shade900),
           ),
         ],
