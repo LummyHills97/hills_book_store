@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation.dart';
+import 'package:hills_book_store/features/onboarding/data/models/cart_item_model.dart';
 import 'package:provider/provider.dart';
 
+import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation.dart';
 import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +15,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProfileProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ProfileProvider>(
+          create: (_) => ProfileProvider(),
+        ),
+        ChangeNotifierProvider<CartProvider>(
+          create: (_) => CartProvider(),
+        ),
+      ],
       child: const AppView(),
     );
   }
