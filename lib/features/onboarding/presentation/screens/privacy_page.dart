@@ -61,7 +61,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
                 title: 'Change Password',
                 subtitle: 'Update your account password',
                 onTap: () {
-                  // TODO: Implement change password
+                  
                 },
               ),
               _buildTile(
@@ -69,7 +69,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
                 title: 'Two-Factor Authentication',
                 subtitle: 'Add extra security to your account',
                 onTap: () {
-                  // TODO: Implement 2FA
+                  
                 },
               ),
             ],
@@ -90,7 +90,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
                 title: 'Download Your Data',
                 subtitle: 'Get a copy of your information',
                 onTap: () {
-                  // TODO: Implement data download
+                  
                 },
               ),
               _buildTile(
@@ -129,7 +129,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -155,7 +155,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF5E5CE6).withOpacity(0.1),
+              color: const Color(0xFF5E5CE6).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: const Color(0xFF5E5CE6), size: 20),
@@ -183,7 +183,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFF5E5CE6),
+            activeThumbColor: const Color(0xFF5E5CE6),
           ),
         ],
       ),
@@ -209,7 +209,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: (textColor ?? const Color(0xFF5E5CE6)).withOpacity(0.1),
+                  color: (textColor ?? const Color(0xFF5E5CE6)).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -264,7 +264,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: Implement account deletion
+              
             },
             child: const Text(
               'Delete',
