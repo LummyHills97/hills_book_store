@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/data/models/cart_item_model.dart';
-import 'package:hills_book_store/features/onboarding/presentation/search/book_search_delegate.dart';
 import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/data/books_data.dart';
 import 'package:hills_book_store/features/onboarding/data/models/book_model.dart';
 import 'package:hills_book_store/features/onboarding/providers/cart_provider.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/book_details_screen.dart';
+import 'package:hills_book_store/features/onboarding/presentation/search/book_search_delegate.dart';
 import 'package:hills_book_store/features/onboarding/widgets/book_card.dart';
 
 class HomeScreen extends StatelessWidget {
