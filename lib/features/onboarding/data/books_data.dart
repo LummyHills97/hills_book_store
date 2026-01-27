@@ -475,7 +475,7 @@ final List<BookModel> books = [
     description: 'A comprehensive biography of C.S. Lewis, chronicling his remarkable life and legacy.',
   ),
   BookModel(
-    imagePath: 'assets/images/covers/New-Efo-riro-.jpg',
+    imagePath: 'assets/images/covers/New-Efo-riro.jpg',
     title: 'Efo Riro: A Nigerian Culinary History',
     author: 'Chef Stone',
     price: 12500.00,

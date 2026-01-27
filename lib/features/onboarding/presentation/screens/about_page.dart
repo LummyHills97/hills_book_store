@@ -216,7 +216,7 @@ class AboutPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF5E5CE6).withOpacity(0.1),
+                  color: const Color(0xFF5E5CE6).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -250,6 +250,7 @@ class AboutPage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
+      // ignore: deprecated_member_use
       color: color.withOpacity(0.1),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
