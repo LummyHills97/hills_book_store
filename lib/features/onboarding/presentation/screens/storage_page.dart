@@ -28,7 +28,7 @@ class StoragePage extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF5E5CE6).withOpacity(0.3),
+                  color: const Color(0xFF5E5CE6).withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),

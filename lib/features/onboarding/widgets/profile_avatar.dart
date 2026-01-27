@@ -27,9 +27,9 @@ class ProfileAvatar extends StatelessWidget {
               end: Alignment.bottomRight,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(3),
-            child: const CircleAvatar(
+          child: const Padding(
+            padding: EdgeInsets.all(3),
+            child: CircleAvatar(
               backgroundImage: AssetImage(
                 'assets/images/covers/hills.jpg',
               ),

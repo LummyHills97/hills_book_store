@@ -23,14 +23,14 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: const Color(0xFFF5F6FA),
           body: CustomScrollView(
             slivers: [
-              SliverAppBar(
+              const SliverAppBar(
                 expandedHeight: 120,
                 floating: false,
                 pinned: true,
-                backgroundColor: const Color(0xFFF5F6FA),
+                backgroundColor: Color(0xFFF5F6FA),
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
-                  title: const Text(
+                  title: Text(
                     'Profile',
                     style: TextStyle(
                       color: Colors.black,
@@ -38,7 +38,7 @@ class ProfilePage extends StatelessWidget {
                       fontSize: 28,
                     ),
                   ),
-                  titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+                  titlePadding: EdgeInsets.only(left: 20, bottom: 16),
                 ),
               ),
 
@@ -59,7 +59,7 @@ class ProfilePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF5E5CE6).withOpacity(0.3),
+                          color: const Color(0xFF5E5CE6).withValues(alpha: 0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
