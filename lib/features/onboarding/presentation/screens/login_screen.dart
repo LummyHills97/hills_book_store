@@ -122,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // ✅ Navigate to MainNavigationScreen with Slide + Fade Transition
+                    // Navigate to MainNavigationScreen with Slide + Fade Transition
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Duration(milliseconds: 600),
                         pageBuilder:
                             (context, animation, secondaryAnimation) =>
-                                const MainNavigationScreen(), // ✅ Changed to MainNavigationScreen
+                                const MainNavigationScreen(), //  Changed to MainNavigationScreen
                         transitionsBuilder: (context, animation,
                             secondaryAnimation, child) {
                           const begin = Offset(1.0, 0.0);
@@ -235,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSocialButton(String assetPath) {
     return InkWell(
       onTap: () {
-        // TODO: Handle social login
+        // Handle social login tap
       },
       child: Container(
         padding: const EdgeInsets.all(14),

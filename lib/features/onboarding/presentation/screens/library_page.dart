@@ -84,17 +84,17 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
         physics: const BouncingScrollPhysics(),
         slivers: [
           _buildAppBar(),
-          SliverToBoxAdapter(child: const SizedBox(height: 16)),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
           _buildReadingStats(),
-          SliverToBoxAdapter(child: const SizedBox(height: 24)),
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
           if (currentlyReadingBooks.isNotEmpty) ...[
             _buildCurrentlyReading(),
-            SliverToBoxAdapter(child: const SizedBox(height: 32)),
+            const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
           _buildTabBar(),
-          SliverToBoxAdapter(child: const SizedBox(height: 16)),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
           _buildTabContent(),
-          SliverToBoxAdapter(child: const SizedBox(height: 80)),
+          const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
     );
@@ -107,8 +107,8 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       pinned: true,
       backgroundColor: bgColor,
       elevation: 0,
-      flexibleSpace: FlexibleSpaceBar(
-        title: const Text(
+      flexibleSpace: const FlexibleSpaceBar(
+        title: Text(
           'My Library',
           style: TextStyle(
             color: Colors.black,
@@ -116,7 +116,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
             fontSize: 28,
           ),
         ),
-        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+        titlePadding: EdgeInsets.only(left: 20, bottom: 16),
       ),
       actions: [
         IconButton(
@@ -148,7 +148,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: accent.withOpacity(0.3),
+                color: accent.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -226,7 +226,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -322,7 +322,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -513,7 +513,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -549,7 +549,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 4,
                       ),
                     ],

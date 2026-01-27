@@ -169,7 +169,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: Colors.green.shade900.withOpacity(0.19),
+                                color: Colors.green.shade900.withValues(alpha: 0.19),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               )
@@ -535,7 +535,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.orange.withOpacity(0.3),
+            color: Colors.orange.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -648,7 +648,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -659,7 +659,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: (community['color'] as Color).withOpacity(0.1),
+              color: (community['color'] as Color).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -757,7 +757,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
