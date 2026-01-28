@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/home_screen.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen.dart';
 
 void main() {
   runApp(
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const MainNavigationScreen(), // Use MainNavigationScreen
     );
   }
 }
