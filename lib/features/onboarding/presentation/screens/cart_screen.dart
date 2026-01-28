@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/data/models/cart_item_model.dart';
+import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart'; // ADD THIS LINE
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
