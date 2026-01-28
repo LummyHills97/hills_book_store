@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
+import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => CartProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -25,7 +29,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
         useMaterial3: true,
       ),
-      home: const MainNavigationScreen(), // Use MainNavigationScreen
+      home: const MainNavigationScreen(),
     );
   }
 }
