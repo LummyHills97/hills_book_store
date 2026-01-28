@@ -4,7 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CartProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,20 +17,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Wrap the entire app with ChangeNotifierProvider
-    // This makes CartProvider accessible throughout the app
-    return ChangeNotifierProvider(
-      create: (context) => CartProvider(),
-      child: MaterialApp(
-        title: 'Hills Book Store',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-          fontFamily: 'Poppins', // or your preferred font
-          useMaterial3: true,
-        ),
-        home: const HomeScreen(),
+    return MaterialApp(
+      title: 'Hills Book Store',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        fontFamily: 'Poppins',
+        useMaterial3: true,
       ),
+      home: const HomeScreen(),
     );
   }
 }

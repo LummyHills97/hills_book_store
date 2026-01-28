@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/create_account_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
-import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen';
+import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen.dart';
 
 
 class LoginScreen extends StatefulWidget {
