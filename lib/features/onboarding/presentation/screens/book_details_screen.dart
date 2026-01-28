@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hills_book_store/features/onboarding/data/models/cart_item_model.dart';
+import 'package:provider/provider.dart';
+import 'package:hills_book_store/features/onboarding/data/models/book_model.dart';
 
 class BookDetailsScreen extends StatelessWidget {
   final String title;
@@ -50,6 +53,18 @@ class BookDetailsScreen extends StatelessWidget {
                   imagePath,
                   height: 260,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 260,
+                      width: 180,
+                      color: Colors.grey.shade300,
+                      child: Icon(
+                        Icons.book,
+                        size: 60,
+                        color: Colors.grey.shade600,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -75,7 +90,7 @@ class BookDetailsScreen extends StatelessWidget {
 
             // --- Price ---
             Text(
-              "₦${price.toStringAsFixed(2)}",
+              "₦${price.toStringAsFixed(0)}",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -108,11 +123,29 @@ class BookDetailsScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  // Get the cart provider (listen: false because we're modifying, not reading)
+                  final cart = Provider.of<CartProvider>(context, listen: false);
+                  
+                  // Create a BookModel from the current book details
+                  final book = BookModel(
+                    title: title,
+                    author: author,
+                    imagePath: imagePath,
+                    price: price,
+                    category: '', // Add category if you have it
+                    description: description,
+                  );
+                  
+                  // Add the book to cart
+                  cart.addItem(book);
+                  
+                  // Show confirmation snackbar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text("✅ $title added to cart!"),
                       behavior: SnackBarBehavior.floating,
                       backgroundColor: Colors.green.shade900,
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
