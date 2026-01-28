@@ -92,17 +92,3 @@ class CartProvider extends ChangeNotifier {
     }
   }
 }
-
-// Usage in main.dart:
-// 
-// void main() {
-//   runApp(
-//     MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_) => ProfileProvider()),
-//         ChangeNotifierProvider(create: (_) => CartProvider()),
-//       ],
-//       child: const MyApp(),
-//     ),
-//   );
-// }

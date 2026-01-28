@@ -4,7 +4,7 @@ class OnboardingPage extends StatelessWidget {
   final String image;
   final String title;
   final String description;
-  final String? subtitle; // 👈 Optional "Welcome" subheading
+  final String? subtitle; //  Optional "Welcome" subheading
 
   const OnboardingPage({
     super.key,
@@ -21,7 +21,7 @@ class OnboardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // 👇 Subtitle ("Welcome") first, with styled underline
+          // Subtitle ("Welcome") first, with styled underline
           if (subtitle != null) ...[
             Column(
               children: [
@@ -35,7 +35,7 @@ class OnboardingPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                // 👇 Green underline accent
+                // Green underline accent
                 Container(
                   height: 4,
                   width: 60,
@@ -49,7 +49,7 @@ class OnboardingPage extends StatelessWidget {
             const SizedBox(height: 24),
           ],
 
-          // 👇 Image next
+          // Image next
           Image.asset(
             image,
             height: 250,
@@ -57,7 +57,7 @@ class OnboardingPage extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          // 👇 Title after image
+          // Title after image
           Text(
             title,
             textAlign: TextAlign.center,
@@ -70,7 +70,7 @@ class OnboardingPage extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // 👇 Description last
+          // Description last
           Text(
             description,
             textAlign: TextAlign.center,

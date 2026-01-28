@@ -21,9 +21,9 @@ class BookCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        clipBehavior: Clip.hardEdge, // ✅ ensures rounded image clipping
+        clipBehavior: Clip.hardEdge, //  ensures rounded image clipping
         child: SizedBox(
-          width: 140, // ✅ consistent
+          width: 140, // consistent
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

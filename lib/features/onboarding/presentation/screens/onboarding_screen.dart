@@ -170,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // 👇 Create Account button (second)
+                  // Create Account button (second)
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

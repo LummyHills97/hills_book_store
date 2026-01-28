@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/data/models/cart_item_model.dart';
+import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:provider/provider.dart';
-
-import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation.dart';
-import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
-
+import 'package:hills_book_store/features/onboarding/presentation/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,35 +12,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ProfileProvider>(
-          create: (_) => ProfileProvider(),
+    // Wrap the entire app with ChangeNotifierProvider
+    // This makes CartProvider accessible throughout the app
+    return ChangeNotifierProvider(
+      create: (context) => CartProvider(),
+      child: MaterialApp(
+        title: 'Hills Book Store',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          fontFamily: 'Poppins', // or your preferred font
+          useMaterial3: true,
         ),
-        ChangeNotifierProvider<CartProvider>(
-          create: (_) => CartProvider(),
-        ),
-      ],
-      child: const AppView(),
-    );
-  }
-}
-
-class AppView extends StatelessWidget {
-  const AppView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hills Book Store',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5E5CE6),
-        ),
-        useMaterial3: true,
+        home: const HomeScreen(),
       ),
-      home: const MainNavigation(),
     );
   }
 }
