@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hills_book_store/features/onboarding/data/models/cart_item_model.dart';
+import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart'; // FIX: Add this import
 import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/data/models/book_model.dart';
 
@@ -47,24 +47,27 @@ class BookDetailsScreen extends StatelessWidget {
           children: [
             // --- Book Cover ---
             Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  imagePath,
-                  height: 260,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 260,
-                      width: 180,
-                      color: Colors.grey.shade300,
-                      child: Icon(
-                        Icons.book,
-                        size: 60,
-                        color: Colors.grey.shade600,
-                      ),
-                    );
-                  },
+              child: Hero(
+                tag: 'book_$title',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    imagePath,
+                    height: 260,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 260,
+                        width: 180,
+                        color: Colors.grey.shade300,
+                        child: Icon(
+                          Icons.book,
+                          size: 60,
+                          color: Colors.grey.shade600,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -119,52 +122,68 @@ class BookDetailsScreen extends StatelessWidget {
             const SizedBox(height: 30),
 
             // --- Add to Cart Button ---
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Get the cart provider (listen: false because we're modifying, not reading)
-                  final cart = Provider.of<CartProvider>(context, listen: false);
-                  
-                  // Create a BookModel from the current book details
-                  final book = BookModel(
-                    title: title,
-                    author: author,
-                    imagePath: imagePath,
-                    price: price,
-                    category: '', // Add category if you have it
-                    description: description,
-                  );
-                  
-                  // Add the book to cart
-                  cart.addItem(book);
-                  
-                  // Show confirmation snackbar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("✅ $title added to cart!"),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.green.shade900,
-                      duration: const Duration(seconds: 2),
+            Consumer<CartProvider>(
+              builder: (context, cart, child) {
+                final isInCart = cart.isInCart(title);
+                
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      final book = BookModel(
+                        title: title,
+                        author: author,
+                        imagePath: imagePath,
+                        price: price,
+                        category: '',
+                        description: description,
+                      );
+                      
+                      cart.addItem(book);
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              const Icon(Icons.check_circle, color: Colors.white),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text("$title added to cart!"),
+                              ),
+                            ],
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.green.shade900,
+                          duration: const Duration(seconds: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      isInCart ? Icons.shopping_bag : Icons.shopping_bag_outlined,
+                      color: Colors.white,
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.shade900,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    label: Text(
+                      isInCart ? "Add More" : "Add to Cart",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade900,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 2,
+                    ),
                   ),
-                ),
-                child: const Text(
-                  "Add to Cart",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),
