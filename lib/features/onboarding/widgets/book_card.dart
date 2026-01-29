@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hills_book_store/core/utils/currency_formatter.dart';
 
 class BookCard extends StatelessWidget {
   final String title;
@@ -67,7 +68,7 @@ class BookCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6.0),
                 child: Text(
-                  "₦${price.toStringAsFixed(2)}",
+                  CurrencyFormatter.format(price),
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
