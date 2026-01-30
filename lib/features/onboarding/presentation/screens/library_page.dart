@@ -14,10 +14,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
   late TabController _tabController;
   String selectedCategory = 'All';
   
-  static const bgColor = Color(0xFFF7F7F9);
-  static const accent = Color(0xFF5E5CE6);
-  
-  // Simulated user library data - in production, this would come from a database
+  // Simulated user library data
   final Set<String> favoriteBooks = {
     'Americanah',
     'Half of a Yellow Sun',
@@ -42,9 +39,9 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
 
   // Stats
   int get totalBooksRead => finishedBooks.length;
-  int get totalPages => finishedBooks.length * 250; // Estimate
-  int get hoursRead => finishedBooks.length * 8; // Estimate
-  int get readingStreak => 7; // This would be calculated from actual reading data
+  int get totalPages => finishedBooks.length * 250;
+  int get hoursRead => finishedBooks.length * 8;
+  int get readingStreak => 7;
   int get todayMinutes => 45;
 
   @override
@@ -78,77 +75,76 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: bgColor,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          _buildAppBar(),
+          _buildAppBar(theme),
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
-          _buildReadingStats(),
+          _buildReadingStats(theme, isDark),
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
           if (currentlyReadingBooks.isNotEmpty) ...[
-            _buildCurrentlyReading(),
+            _buildCurrentlyReading(theme, isDark),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
-          _buildTabBar(),
+          _buildTabBar(theme, isDark),
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
-          _buildTabContent(),
+          _buildTabContent(theme, isDark),
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
     );
   }
 
-  Widget _buildAppBar() {
+  Widget _buildAppBar(ThemeData theme) {
     return SliverAppBar(
       expandedHeight: 120,
       floating: false,
       pinned: true,
-      backgroundColor: bgColor,
       elevation: 0,
-      flexibleSpace: const FlexibleSpaceBar(
+      flexibleSpace: FlexibleSpaceBar(
         title: Text(
           'My Library',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w800,
-            fontSize: 28,
-          ),
+          style: theme.textTheme.displayMedium?.copyWith(fontSize: 28),
         ),
-        titlePadding: EdgeInsets.only(left: 20, bottom: 16),
+        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.search, color: Colors.black),
+          icon: Icon(Icons.search, color: theme.iconTheme.color),
           onPressed: () {
             // Implement search
           },
         ),
         IconButton(
-          icon: const Icon(Icons.filter_list, color: Colors.black),
-          onPressed: () => _showFilterSheet(),
+          icon: Icon(Icons.filter_list, color: theme.iconTheme.color),
+          onPressed: () => _showFilterSheet(theme),
         ),
       ],
     );
   }
 
-  Widget _buildReadingStats() {
+  Widget _buildReadingStats(ThemeData theme, bool isDark) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF5E5CE6), Color(0xFF7D7AFF)],
+            gradient: LinearGradient(
+              colors: isDark
+                  ? [const Color(0xFF1B4332), const Color(0xFF2D6A4F)]
+                  : [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: accent.withValues(alpha: 0.3),
+                color: theme.colorScheme.primary.withOpacity(0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -160,51 +156,78 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Reading Streak',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Reading Streak',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '$readingStreak days 🔥',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Text(
+                              '🔥',
+                              style: TextStyle(fontSize: 28),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '$readingStreak days',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const Text(
-                        'Today',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Today',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '$todayMinutes min',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 4),
+                        Text(
+                          '$todayMinutes',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                        const Text(
+                          'minutes',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Row(
                 children: [
                   _buildMiniStat('$totalBooksRead', 'Books Read', Icons.menu_book),
@@ -226,13 +249,13 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
+          color: Colors.white.withOpacity(0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
             Icon(icon, color: Colors.white, size: 20),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               value,
               style: const TextStyle(
@@ -241,6 +264,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 fontSize: 16,
               ),
             ),
+            const SizedBox(height: 2),
             Text(
               label,
               style: const TextStyle(
@@ -254,7 +278,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildCurrentlyReading() {
+  Widget _buildCurrentlyReading(ThemeData theme, bool isDark) {
     return SliverToBoxAdapter(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,16 +288,22 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Continue Reading',
-                  style: TextStyle(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: const Text('See All'),
+                  child: Text(
+                    'See All',
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -290,7 +320,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
               itemBuilder: (context, index) {
                 final book = currentlyReadingBooks[index];
                 final progress = currentlyReadingProgress[book.title] ?? 0.0;
-                return _buildReadingCard(book, progress);
+                return _buildReadingCard(book, progress, theme, isDark);
               },
             ),
           ),
@@ -299,13 +329,13 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildReadingCard(BookModel book, double progress) {
+  Widget _buildReadingCard(BookModel book, double progress, ThemeData theme, bool isDark) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BookDetailsScreen(
+            builder: (context) => BookDetailsScreen(
               title: book.title,
               author: book.author,
               imagePath: book.imagePath,
@@ -318,11 +348,14 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       child: Container(
         width: 160,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: theme.dividerColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
+              color: isDark
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.08),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -344,8 +377,12 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 110,
-                    color: Colors.grey.shade300,
-                    child: const Icon(Icons.book, size: 40),
+                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    child: Icon(
+                      Icons.auto_stories,
+                      size: 40,
+                      color: theme.colorScheme.primary,
+                    ),
                   );
                 },
               ),
@@ -359,9 +396,8 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                     book.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -369,27 +405,23 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                     book.author,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: theme.textTheme.bodySmall,
                   ),
                   const SizedBox(height: 12),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: progress,
-                      backgroundColor: Colors.grey[200],
-                      color: accent,
+                      backgroundColor: theme.dividerColor,
+                      color: theme.colorScheme.primary,
                       minHeight: 6,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     '${(progress * 100).toInt()}% completed',
-                    style: TextStyle(
+                    style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: 11,
-                      color: Colors.grey[600],
                     ),
                   ),
                 ],
@@ -401,27 +433,37 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildTabBar() {
+  Widget _buildTabBar(ThemeData theme, bool isDark) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Container(
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.dividerColor),
           ),
           child: TabBar(
             controller: _tabController,
             indicator: BoxDecoration(
-              color: accent,
+              gradient: LinearGradient(
+                colors: isDark
+                    ? [theme.colorScheme.primary, theme.colorScheme.secondary]
+                    : [theme.colorScheme.primary, theme.colorScheme.secondary],
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
             indicatorSize: TabBarIndicatorSize.tab,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.grey[600],
-            labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+            labelColor: isDark ? theme.colorScheme.onPrimary : Colors.white,
+            unselectedLabelColor: theme.textTheme.bodyMedium?.color,
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+            dividerColor: Colors.transparent,
             tabs: [
-              Tab(text: 'All Books (${filteredBooks.length})'),
+              Tab(text: 'All (${filteredBooks.length})'),
               Tab(text: 'Favorites (${favoriteBooksList.length})'),
               Tab(text: 'Finished (${finishedBooksList.length})'),
             ],
@@ -431,42 +473,46 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildTabContent() {
+  Widget _buildTabContent(ThemeData theme, bool isDark) {
     return SliverFillRemaining(
       child: TabBarView(
         controller: _tabController,
         children: [
-          _buildBookGrid(filteredBooks),
-          _buildBookGrid(favoriteBooksList),
-          _buildBookGrid(finishedBooksList),
+          _buildBookGrid(filteredBooks, theme, isDark),
+          _buildBookGrid(favoriteBooksList, theme, isDark),
+          _buildBookGrid(finishedBooksList, theme, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildBookGrid(List<BookModel> bookList) {
+  Widget _buildBookGrid(List<BookModel> bookList, ThemeData theme, bool isDark) {
     if (bookList.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.book_outlined, size: 64, color: Colors.grey.shade300),
-            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.auto_stories_outlined,
+                size: 64,
+                color: theme.colorScheme.primary.withOpacity(0.5),
+              ),
+            ),
+            const SizedBox(height: 24),
             Text(
               'No books here yet',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w600,
-              ),
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
               'Start exploring to add books',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: theme.textTheme.bodyMedium,
             ),
           ],
         ),
@@ -484,12 +530,12 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       ),
       itemCount: bookList.length,
       itemBuilder: (context, index) {
-        return _buildBookCover(bookList[index]);
+        return _buildBookCover(bookList[index], theme, isDark);
       },
     );
   }
 
-  Widget _buildBookCover(BookModel book) {
+  Widget _buildBookCover(BookModel book, ThemeData theme, bool isDark) {
     final isFavorite = favoriteBooks.contains(book.title);
     final isFinished = finishedBooks.contains(book.title);
     
@@ -498,7 +544,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BookDetailsScreen(
+            builder: (context) => BookDetailsScreen(
               title: book.title,
               author: book.author,
               imagePath: book.imagePath,
@@ -513,9 +559,9 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: theme.colorScheme.primary.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -530,9 +576,16 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey.shade300,
-                    child: const Center(
-                      child: Icon(Icons.book, size: 32, color: Colors.grey),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.auto_stories,
+                        size: 32,
+                        color: theme.colorScheme.primary,
+                      ),
                     ),
                   );
                 },
@@ -545,12 +598,15 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade400,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFF6B6B), Color(0xFFFF8E53)],
+                    ),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 4,
+                        color: Colors.red.withOpacity(0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -567,23 +623,31 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade700,
+                    gradient: LinearGradient(
+                      colors: isDark
+                          ? [theme.colorScheme.primary, theme.colorScheme.secondary]
+                          : [theme.colorScheme.primary, theme.colorScheme.secondary],
+                    ),
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(12),
                       bottomRight: Radius.circular(12),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check_circle, color: Colors.white, size: 12),
-                      SizedBox(width: 4),
+                      Icon(
+                        Icons.check_circle,
+                        color: isDark ? theme.colorScheme.onPrimary : Colors.white,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 4),
                       Text(
                         'Finished',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: isDark ? theme.colorScheme.onPrimary : Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -598,15 +662,15 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     );
   }
 
-  void _showFilterSheet() {
+  void _showFilterSheet(ThemeData theme) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
@@ -615,12 +679,15 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Filter by Category',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                Icon(Icons.filter_list, color: theme.colorScheme.primary),
+                const SizedBox(width: 12),
+                Text(
+                  'Filter by Category',
+                  style: theme.textTheme.titleLarge,
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Wrap(
@@ -636,11 +703,23 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                           });
                           Navigator.pop(context);
                         },
-                        selectedColor: accent,
+                        selectedColor: theme.colorScheme.primary,
+                        backgroundColor: theme.colorScheme.surface,
                         labelStyle: TextStyle(
                           color: selectedCategory == category
-                              ? Colors.white
-                              : Colors.black,
+                              ? (theme.brightness == Brightness.dark
+                                  ? theme.colorScheme.onPrimary
+                                  : Colors.white)
+                              : theme.textTheme.bodyLarge?.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(
+                            color: selectedCategory == category
+                                ? theme.colorScheme.primary
+                                : theme.dividerColor,
+                          ),
                         ),
                       ))
                   .toList(),
