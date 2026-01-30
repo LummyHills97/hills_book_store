@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hills_book_store/core/theme/theme.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
@@ -24,11 +25,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hills Book Store',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        fontFamily: 'Poppins',
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system, // Automatically switches based on system setting
       home: const MainNavigationScreen(),
     );
   }
