@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
+import 'package:hills_book_store/core/utils/currency_formatter.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
@@ -301,7 +302,7 @@ class CartScreen extends StatelessWidget {
                     children: [
                       // Price
                       Text(
-                        '₦${item.book.price.toStringAsFixed(0)}',
+                        CurrencyFormatter.format(item.book.price),
                         style: TextStyle(
                           fontSize: 19,
                           fontWeight: FontWeight.bold,
@@ -467,7 +468,7 @@ class CartScreen extends StatelessWidget {
           ),
         ),
         Text(
-          '₦${amount.toStringAsFixed(0)}',
+          CurrencyFormatter.format(amount),
           style: TextStyle(
             fontSize: isTotal ? 24 : 16,
             fontWeight: FontWeight.bold,
@@ -535,7 +536,7 @@ class CartScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '₦${cart.total.toStringAsFixed(0)}',
+                        CurrencyFormatter.format(cart.total),
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
