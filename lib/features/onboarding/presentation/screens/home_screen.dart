@@ -13,6 +13,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     final newReleases =
         books.where((b) => b.category == 'Fiction').take(6).toList();
     final trending =
@@ -21,11 +24,10 @@ class HomeScreen extends StatelessWidget {
         books.where((b) => b.category == 'Romance').take(6).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          _buildAppBar(context),
+          _buildAppBar(context, theme, isDark),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,12 +35,13 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildReadingGoalCard(),
+                  child: _buildReadingGoalCard(theme, isDark),
                 ),
                 const SizedBox(height: 28),
 
                 _buildSection(
                   context,
+                  theme,
                   title: 'New Releases',
                   subtitle: 'Fresh stories just for you',
                   books: newReleases,
@@ -46,6 +49,7 @@ class HomeScreen extends StatelessWidget {
 
                 _buildSection(
                   context,
+                  theme,
                   title: 'Trending Now',
                   subtitle: 'What everyone is reading',
                   books: trending,
@@ -53,6 +57,7 @@ class HomeScreen extends StatelessWidget {
 
                 _buildSection(
                   context,
+                  theme,
                   title: 'For You',
                   subtitle: 'Based on your interests',
                   books: forYou,
@@ -69,27 +74,29 @@ class HomeScreen extends StatelessWidget {
 
   // ---------------- APP BAR ----------------
 
-  SliverAppBar _buildAppBar(BuildContext context) {
+  SliverAppBar _buildAppBar(BuildContext context, ThemeData theme, bool isDark) {
     return SliverAppBar(
       pinned: true,
       elevation: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       expandedHeight: 110,
       automaticallyImplyLeading: false,
-      flexibleSpace: const FlexibleSpaceBar(
-        titlePadding: EdgeInsets.only(left: 16, bottom: 16),
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
         title: Text(
           'Hi, Olumide 👋',
-          style: TextStyle(
+          style: theme.textTheme.displayMedium?.copyWith(
             fontSize: 28,
-            fontWeight: FontWeight.w700,
-            color: Colors.black87,
           ),
         ),
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.search, size: 26, color: Colors.black87),
+          icon: Icon(
+            Icons.search,
+            size: 26,
+            color: theme.iconTheme.color,
+          ),
           onPressed: () {
             showSearch(
               context: context,
@@ -102,10 +109,10 @@ class HomeScreen extends StatelessWidget {
             return IconButton(
               icon: Stack(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.shopping_bag_outlined,
                     size: 26,
-                    color: Colors.black87,
+                    color: theme.iconTheme.color,
                   ),
                   if (cart.itemCount > 0)
                     Positioned(
@@ -113,15 +120,26 @@ class HomeScreen extends StatelessWidget {
                       top: 0,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: isDark
+                                ? [const Color(0xFF52B788), const Color(0xFF74C69D)]
+                                : [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
+                          ),
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Text(
                           '${cart.itemCount}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 10,
-                            color: Colors.white,
+                            color: isDark ? const Color(0xFF081C15) : Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -147,39 +165,106 @@ class HomeScreen extends StatelessWidget {
 
   // ---------------- READING GOAL ----------------
 
-  Widget _buildReadingGoalCard() {
+  Widget _buildReadingGoalCard(ThemeData theme, bool isDark) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.green.shade900, Colors.green.shade700],
+          colors: isDark
+              ? [const Color(0xFF1B4332), const Color(0xFF2D6A4F)]
+              : [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: isDark ? 0.3 : 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '2026 Reading Goal',
-            style: TextStyle(color: Colors.white70, fontSize: 13),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.auto_stories,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                '2026 Reading Goal',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 16),
           const Text(
             '12 of 50 books',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
+              letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          Text(
+            '24% Complete',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
           ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: const LinearProgressIndicator(
-              value: 0.24,
-              backgroundColor: Colors.white24,
-              valueColor: AlwaysStoppedAnimation(Colors.white),
-              minHeight: 8,
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              children: [
+                Container(
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                FractionallySizedBox(
+                  widthFactor: 0.24,
+                  child: Container(
+                    height: 10,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: isDark
+                            ? [const Color(0xFFF4E4C1), const Color(0xFFD4AF37)]
+                            : [const Color(0xFFD4AF37), const Color(0xFFF4E4C1)],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFD4AF37).withValues(alpha: 0.4),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -190,7 +275,8 @@ class HomeScreen extends StatelessWidget {
   // ---------------- BOOK SECTION ----------------
 
   Widget _buildSection(
-    BuildContext context, {
+    BuildContext context,
+    ThemeData theme, {
     required String title,
     required String subtitle,
     required List<BookModel> books,
@@ -207,18 +293,12 @@ class HomeScreen extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: theme.textTheme.displaySmall,
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                style: theme.textTheme.bodyMedium,
               ),
             ],
           ),
