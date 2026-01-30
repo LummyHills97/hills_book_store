@@ -54,8 +54,10 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -63,26 +65,28 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               expandedHeight: 180,
               floating: false,
               pinned: true,
-              backgroundColor: Colors.white,
               elevation: 0,
               automaticallyImplyLeading: false,
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: const EdgeInsets.only(left: 16, bottom: 50),
-                title: const Text(
+                title: Text(
                   'Explore',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                    letterSpacing: -0.5,
-                  ),
+                  style: theme.textTheme.displayMedium?.copyWith(fontSize: 28),
                 ),
                 background: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.blue.shade50, Colors.white],
+                      colors: isDark
+                          ? [
+                              theme.colorScheme.primary.withOpacity(0.1),
+                              theme.scaffoldBackgroundColor,
+                            ]
+                          : [
+                              theme.colorScheme.primary.withOpacity(0.05),
+                              theme.scaffoldBackgroundColor,
+                            ],
                     ),
                   ),
                 ),
@@ -90,12 +94,12 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(48),
                 child: Container(
-                  color: Colors.white,
+                  color: theme.scaffoldBackgroundColor,
                   child: TabBar(
                     controller: _tabController,
-                    labelColor: Colors.green.shade900,
-                    unselectedLabelColor: Colors.grey.shade600,
-                    indicatorColor: Colors.green.shade900,
+                    labelColor: theme.colorScheme.primary,
+                    unselectedLabelColor: theme.textTheme.bodyMedium?.color,
+                    indicatorColor: theme.colorScheme.primary,
                     indicatorWeight: 3,
                     labelStyle: const TextStyle(
                       fontSize: 15,
@@ -115,17 +119,16 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         body: TabBarView(
           controller: _tabController,
           children: [
-            _buildBooksTab(),
-            _buildCommunitiesTab(),
-            _buildBookstoresTab(),
+            _buildBooksTab(theme, isDark),
+            _buildCommunitiesTab(theme, isDark),
+            _buildBookstoresTab(theme, isDark),
           ],
         ),
       ),
     );
   }
 
-  // BOOKS TAB (unchanged)
-  Widget _buildBooksTab() {
+  Widget _buildBooksTab(ThemeData theme, bool isDark) {
     final selectedCategory = _categories[_selectedCategoryIndex];
     final filteredBooks = selectedCategory == 'All'
         ? books
@@ -138,7 +141,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _buildSearchBar(),
+            child: _buildSearchBar(theme),
           ),
           const SizedBox(height: 20),
           SizedBox(
@@ -160,16 +163,23 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     duration: const Duration(milliseconds: 250),
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.green.shade900 : Colors.white,
+                      gradient: isSelected
+                          ? LinearGradient(
+                              colors: isDark
+                                  ? [theme.colorScheme.primary, theme.colorScheme.secondary]
+                                  : [theme.colorScheme.primary, theme.colorScheme.secondary],
+                            )
+                          : null,
+                      color: isSelected ? null : theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
-                        color: isSelected ? Colors.green.shade900 : Colors.grey.shade300,
+                        color: isSelected ? theme.colorScheme.primary : theme.dividerColor,
                         width: 1.4,
                       ),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: Colors.green.shade900.withValues(alpha: 0.19),
+                                color: theme.colorScheme.primary.withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               )
@@ -182,7 +192,9 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                         Icon(
                           categoryIcons[category],
                           size: 18,
-                          color: isSelected ? Colors.white : Colors.black87,
+                          color: isSelected
+                              ? (isDark ? theme.colorScheme.onPrimary : Colors.white)
+                              : theme.iconTheme.color,
                         ),
                         const SizedBox(width: 6),
                         Text(
@@ -190,7 +202,9 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: isSelected ? Colors.white : Colors.black87,
+                            color: isSelected
+                                ? (isDark ? theme.colorScheme.onPrimary : Colors.white)
+                                : theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                       ],
@@ -208,18 +222,14 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               children: [
                 Text(
                   selectedCategory == 'All' ? 'All Books' : selectedCategory,
-                  style: const TextStyle(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
                   ),
                 ),
                 Text(
                   '${filteredBooks.length} books',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: theme.textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -231,14 +241,15 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     padding: const EdgeInsets.all(32.0),
                     child: Column(
                       children: [
-                        Icon(Icons.book_outlined, size: 64, color: Colors.grey.shade400),
+                        Icon(
+                          Icons.book_outlined,
+                          size: 64,
+                          color: theme.iconTheme.color?.withOpacity(0.3),
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           "No books in this category",
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 16,
-                          ),
+                          style: theme.textTheme.bodyLarge,
                         ),
                       ],
                     ),
@@ -267,7 +278,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => BookDetailsScreen(
+                              builder: (context) => BookDetailsScreen(
                                 title: book.title,
                                 author: book.author,
                                 imagePath: book.imagePath,
@@ -287,8 +298,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  // COMMUNITIES TAB - UPDATED with join functionality
-  Widget _buildCommunitiesTab() {
+  Widget _buildCommunitiesTab(ThemeData theme, bool isDark) {
     final communities = [
       {
         'id': 'fiction_lovers',
@@ -319,7 +329,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'name': 'Nigerian Literature',
         'members': '945',
         'icon': Icons.public,
-        'color': Colors.green,
+        'color': theme.colorScheme.primary,
         'description': 'Celebrate African stories',
       },
     ];
@@ -346,29 +356,25 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Active Challenges
-          const Text(
+          Text(
             'Active Challenges',
-            style: TextStyle(
+            style: theme.textTheme.titleLarge?.copyWith(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 14),
-          ...challenges.map((challenge) => _buildChallengeCard(challenge)),
+          ...challenges.map((challenge) => _buildChallengeCard(challenge, theme, isDark)),
           const SizedBox(height: 24),
 
-          // Book Communities
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Book Communities',
-                style: TextStyle(
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: -0.5,
                 ),
               ),
               TextButton(
@@ -376,7 +382,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                 child: Text(
                   'See All',
                   style: TextStyle(
-                    color: Colors.green.shade900,
+                    color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -384,14 +390,13 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             ],
           ),
           const SizedBox(height: 14),
-          ...communities.map((community) => _buildCommunityCard(community)),
+          ...communities.map((community) => _buildCommunityCard(community, theme, isDark)),
         ],
       ),
     );
   }
 
-  // BOOKSTORES TAB - unchanged for now, will update with map
-  Widget _buildBookstoresTab() {
+  Widget _buildBookstoresTab(ThemeData theme, bool isDark) {
     final bookstores = [
       {
         'name': 'CSS Bookshop Lagos',
@@ -432,33 +437,45 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
 
     return Column(
       children: [
-        // Map Placeholder - Will add actual map integration
         Container(
           height: 250,
-          color: Colors.grey.shade200,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: isDark
+                  ? [
+                      theme.colorScheme.primary.withOpacity(0.2),
+                      theme.colorScheme.surface,
+                    ]
+                  : [
+                      theme.colorScheme.primary.withOpacity(0.1),
+                      theme.colorScheme.surface,
+                    ],
+            ),
+          ),
           child: Stack(
             children: [
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.map, size: 64, color: Colors.grey.shade400),
+                    Icon(
+                      Icons.map,
+                      size: 64,
+                      color: theme.iconTheme.color?.withOpacity(0.3),
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Map View',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade600,
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Showing ${bookstores.length} nearby bookstores',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey.shade500,
-                      ),
+                      style: theme.textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -467,15 +484,16 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                 top: 16,
                 right: 16,
                 child: FloatingActionButton.small(
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.surface,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Getting your location...'),
+                      SnackBar(
+                        content: const Text('Getting your location...'),
+                        backgroundColor: theme.colorScheme.primary,
                       ),
                     );
                   },
-                  child: Icon(Icons.my_location, color: Colors.green.shade900),
+                  child: Icon(Icons.my_location, color: theme.colorScheme.primary),
                 ),
               ),
             ],
@@ -488,7 +506,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final store = bookstores[index];
-              return _buildBookstoreCard(store);
+              return _buildBookstoreCard(store, theme, isDark);
             },
           ),
         ),
@@ -496,21 +514,22 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: TextField(
         controller: _searchController,
+        style: theme.textTheme.bodyLarge,
         decoration: InputDecoration(
           border: InputBorder.none,
-          icon: Icon(Icons.search, color: Colors.grey.shade600),
+          icon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.6)),
           hintText: "Search books, authors...",
-          hintStyle: TextStyle(color: Colors.grey.shade500),
+          hintStyle: theme.textTheme.bodyMedium,
         ),
         onSubmitted: (value) {
           if (value.isNotEmpty) {
@@ -521,22 +540,24 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildChallengeCard(Map<String, dynamic> challenge) {
+  Widget _buildChallengeCard(Map<String, dynamic> challenge, ThemeData theme, bool isDark) {
     final challengeId = challenge['id'] as String;
     final isJoined = joinedChallenges.contains(challengeId);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.orange.shade400, Colors.red.shade400],
+          colors: isDark
+              ? [theme.colorScheme.primary, theme.colorScheme.secondary]
+              : [theme.colorScheme.primary, theme.colorScheme.secondary],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.orange.withValues(alpha: 0.3),
-            blurRadius: 8,
+            color: theme.colorScheme.primary.withOpacity(0.3),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -546,7 +567,11 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         children: [
           Row(
             children: [
-              const Icon(Icons.emoji_events, color: Colors.white, size: 28),
+              Icon(
+                Icons.emoji_events,
+                color: isDark ? theme.colorScheme.onPrimary : Colors.white,
+                size: 28,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -554,48 +579,51 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                   children: [
                     Text(
                       challenge['title'],
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: isDark ? theme.colorScheme.onPrimary : Colors.white,
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
                       '${challenge['participants']} participants',
-                      style: const TextStyle(
-                        color: Colors.white70,
+                      style: TextStyle(
+                        color: isDark
+                            ? theme.colorScheme.onPrimary.withOpacity(0.7)
+                            : Colors.white70,
                         fontSize: 13,
                       ),
                     ),
                   ],
                 ),
               ),
-              // Join/Joined Button
               ElevatedButton(
                 onPressed: () {
                   setState(() {
                     if (isJoined) {
                       joinedChallenges.remove(challengeId);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Left ${challenge['title']}'),
-                          backgroundColor: Colors.orange,
-                        ),
-                      );
                     } else {
                       joinedChallenges.add(challengeId);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Joined ${challenge['title']}!'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
                     }
                   });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isJoined
+                            ? 'Left ${challenge['title']}'
+                            : 'Joined ${challenge['title']}!',
+                      ),
+                      backgroundColor: theme.colorScheme.primary,
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isJoined ? Colors.white30 : Colors.white,
-                  foregroundColor: isJoined ? Colors.white : Colors.orange.shade600,
+                  backgroundColor: isJoined
+                      ? Colors.white.withOpacity(0.3)
+                      : (isDark ? theme.colorScheme.onPrimary : Colors.white),
+                  foregroundColor: isJoined
+                      ? (isDark ? theme.colorScheme.onPrimary : Colors.white)
+                      : theme.colorScheme.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -616,16 +644,18 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: challenge['progress'],
-              backgroundColor: Colors.white30,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              backgroundColor: Colors.white.withOpacity(0.3),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isDark ? theme.colorScheme.tertiary : Colors.white,
+              ),
               minHeight: 8,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Goal: ${challenge['target']}',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: isDark ? theme.colorScheme.onPrimary : Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
@@ -635,7 +665,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildCommunityCard(Map<String, dynamic> community) {
+  Widget _buildCommunityCard(Map<String, dynamic> community, ThemeData theme, bool isDark) {
     final communityId = community['id'] as String;
     final isJoined = joinedCommunities.contains(communityId);
 
@@ -643,12 +673,14 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: isDark
+                ? Colors.black.withOpacity(0.2)
+                : Colors.black.withOpacity(0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -659,7 +691,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: (community['color'] as Color).withValues(alpha: 0.1),
+              color: (community['color'] as Color).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -675,30 +707,27 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               children: [
                 Text(
                   community['name'] as String,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   community['description'] as String,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: theme.textTheme.bodySmall,
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(Icons.people, size: 14, color: Colors.grey.shade600),
+                    Icon(
+                      Icons.people,
+                      size: 14,
+                      color: theme.textTheme.bodyMedium?.color,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${community['members']} members',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
+                      style: theme.textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -710,28 +739,27 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               setState(() {
                 if (isJoined) {
                   joinedCommunities.remove(communityId);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Left ${community['name']}'),
-                      backgroundColor: Colors.grey,
-                    ),
-                  );
                 } else {
                   joinedCommunities.add(communityId);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Joined ${community['name']}!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
                 }
               });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    isJoined
+                        ? 'Left ${community['name']}'
+                        : 'Joined ${community['name']}!',
+                  ),
+                  backgroundColor: theme.colorScheme.primary,
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: isJoined ? Colors.grey.shade300 : Colors.green.shade900,
-              foregroundColor: isJoined ? Colors.black87 : Colors.white,
+              backgroundColor: isJoined ? theme.colorScheme.surface : theme.colorScheme.primary,
+              foregroundColor: isJoined ? theme.textTheme.bodyLarge?.color : theme.colorScheme.onPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
+                side: isJoined ? BorderSide(color: theme.dividerColor) : BorderSide.none,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
@@ -748,16 +776,18 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildBookstoreCard(Map<String, dynamic> store) {
+  Widget _buildBookstoreCard(Map<String, dynamic> store, ThemeData theme, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade200),
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: isDark
+                ? Colors.black.withOpacity(0.2)
+                : Colors.black.withOpacity(0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -768,12 +798,12 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.green.shade50,
+              color: theme.colorScheme.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               store['image'] as IconData,
-              color: Colors.green.shade900,
+              color: theme.colorScheme.primary,
               size: 28,
             ),
           ),
@@ -784,18 +814,14 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               children: [
                 Text(
                   store['name'] as String,
-                  style: const TextStyle(
-                    fontSize: 15,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   store['address'] as String,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: theme.textTheme.bodySmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -806,21 +832,20 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     const SizedBox(width: 4),
                     Text(
                       '${store['rating']}',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade700,
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Icon(Icons.location_on, size: 14, color: Colors.grey.shade600),
+                    Icon(
+                      Icons.location_on,
+                      size: 14,
+                      color: theme.textTheme.bodyMedium?.color,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       store['distance'] as String,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
+                      style: theme.textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -832,10 +857,11 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Opening directions to ${store['name']}...'),
+                  backgroundColor: theme.colorScheme.primary,
                 ),
               );
             },
-            icon: Icon(Icons.directions, color: Colors.green.shade900),
+            icon: Icon(Icons.directions, color: theme.colorScheme.primary),
           ),
         ],
       ),
