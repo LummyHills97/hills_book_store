@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_avatar.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_form_card.dart';
 import 'package:hills_book_store/features/onboarding/widgets/profile_text_field.dart';
-
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -45,13 +43,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text('Edit Profile'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
+        title: Text('Edit Profile', style: theme.appBarTheme.titleTextStyle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -61,7 +57,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
             children: [
               const SizedBox(height: 16),
               const ProfileAvatar(radius: 60),
-              const SizedBox(height: 40),
+              const SizedBox(height: 12),
+              TextButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Photo upload coming soon!'),
+                      backgroundColor: theme.colorScheme.primary,
+                    ),
+                  );
+                },
+                icon: Icon(Icons.camera_alt, color: theme.colorScheme.primary),
+                label: Text(
+                  'Change Photo',
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
 
               ProfileFormCard(
                 children: [
@@ -126,13 +141,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5E5CE6),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       context.read<ProfileProvider>().updateProfileField(
@@ -144,21 +152,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           );
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Profile updated successfully'),
-                          backgroundColor: Color(0xFF5E5CE6),
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.white),
+                              SizedBox(width: 12),
+                              Text('Profile updated successfully'),
+                            ],
+                          ),
+                          backgroundColor: theme.colorScheme.primary,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       );
 
                       Navigator.pop(context);
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                  ),
                   child: const Text(
                     'Save Changes',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

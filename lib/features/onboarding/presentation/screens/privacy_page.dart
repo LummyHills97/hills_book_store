@@ -15,36 +15,42 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text('Privacy & Security'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
+        title: Text('Privacy & Security', style: theme.appBarTheme.titleTextStyle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           _buildSection(
+            theme,
+            isDark,
             title: 'Privacy',
             items: [
               _buildSwitchTile(
-                icon: Icons.lock,
+                theme,
+                icon: Icons.lock_outline,
                 title: 'Private Account',
                 subtitle: 'Only followers can see your activity',
                 value: accountPrivate,
                 onChanged: (val) => setState(() => accountPrivate = val),
               ),
+              Divider(color: theme.dividerColor, height: 1),
               _buildSwitchTile(
-                icon: Icons.visibility,
+                theme,
+                icon: Icons.visibility_outlined,
                 title: 'Show Reading Activity',
                 subtitle: 'Let others see what you\'re reading',
                 value: showReadingActivity,
                 onChanged: (val) => setState(() => showReadingActivity = val),
               ),
+              Divider(color: theme.dividerColor, height: 1),
               _buildSwitchTile(
-                icon: Icons.recommend,
+                theme,
+                icon: Icons.recommend_outlined,
                 title: 'Personalized Recommendations',
                 subtitle: 'Get book suggestions based on your activity',
                 value: allowRecommendations,
@@ -54,53 +60,78 @@ class _PrivacyPageState extends State<PrivacyPage> {
           ),
           const SizedBox(height: 24),
           _buildSection(
+            theme,
+            isDark,
             title: 'Security',
             items: [
               _buildTile(
-                icon: Icons.password,
+                theme,
+                icon: Icons.password_outlined,
                 title: 'Change Password',
                 subtitle: 'Update your account password',
                 onTap: () {
-                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Password change coming soon'),
+                      backgroundColor: theme.colorScheme.primary,
+                    ),
+                  );
                 },
               ),
+              Divider(color: theme.dividerColor, height: 1),
               _buildTile(
-                icon: Icons.security,
+                theme,
+                icon: Icons.security_outlined,
                 title: 'Two-Factor Authentication',
                 subtitle: 'Add extra security to your account',
                 onTap: () {
-                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('2FA coming soon'),
+                      backgroundColor: theme.colorScheme.primary,
+                    ),
+                  );
                 },
               ),
             ],
           ),
           const SizedBox(height: 24),
           _buildSection(
+            theme,
+            isDark,
             title: 'Data',
             items: [
               _buildSwitchTile(
-                icon: Icons.share,
+                theme,
+                icon: Icons.share_outlined,
                 title: 'Data Sharing',
                 subtitle: 'Share usage data for improvements',
                 value: dataSharing,
                 onChanged: (val) => setState(() => dataSharing = val),
               ),
+              Divider(color: theme.dividerColor, height: 1),
               _buildTile(
-                icon: Icons.download,
+                theme,
+                icon: Icons.download_outlined,
                 title: 'Download Your Data',
                 subtitle: 'Get a copy of your information',
                 onTap: () {
-                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Data download initiated'),
+                      backgroundColor: theme.colorScheme.primary,
+                    ),
+                  );
                 },
               ),
+              Divider(color: theme.dividerColor, height: 1),
               _buildTile(
-                icon: Icons.delete_forever,
+                theme,
+                icon: Icons.delete_forever_outlined,
                 title: 'Delete Account',
                 subtitle: 'Permanently delete your account',
-                textColor: const Color(0xFFFF6B6B),
-                onTap: () {
-                  _showDeleteAccountDialog();
-                },
+                textColor: Colors.red.shade600,
+                onTap: () => _showDeleteAccountDialog(theme),
               ),
             ],
           ),
@@ -109,27 +140,29 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
-  Widget _buildSection({required String title, required List<Widget> items}) {
+  Widget _buildSection(
+    ThemeData theme,
+    bool isDark, {
+    required String title,
+    required List<Widget> items,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 12),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: Text(title, style: theme.textTheme.titleLarge),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: theme.dividerColor),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.2)
+                    : Colors.black.withValues(alpha: 0.04),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -141,7 +174,8 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
-  Widget _buildSwitchTile({
+  Widget _buildSwitchTile(
+    ThemeData theme, {
     required IconData icon,
     required String title,
     required String subtitle,
@@ -149,74 +183,64 @@ class _PrivacyPageState extends State<PrivacyPage> {
     required ValueChanged<bool> onChanged,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: const Color(0xFF5E5CE6).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: const Color(0xFF5E5CE6), size: 20),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 22),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                ),
+                Text(subtitle, style: theme.textTheme.bodySmall),
               ],
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: const Color(0xFF5E5CE6),
+            activeThumbColor: theme.colorScheme.primary,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTile({
+  Widget _buildTile(
+    ThemeData theme, {
     required IconData icon,
     required String title,
     required String subtitle,
     Color? textColor,
     required VoidCallback onTap,
   }) {
+    final itemColor = textColor ?? theme.colorScheme.primary;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: (textColor ?? const Color(0xFF5E5CE6)).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  color: itemColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  color: textColor ?? const Color(0xFF5E5CE6),
-                  size: 20,
-                ),
+                child: Icon(icon, color: itemColor, size: 22),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -225,21 +249,20 @@ class _PrivacyPageState extends State<PrivacyPage> {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                      style: theme.textTheme.titleMedium?.copyWith(
                         color: textColor,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                    ),
+                    Text(subtitle, style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
+              Icon(
+                Icons.chevron_right,
+                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+              ),
             ],
           ),
         ),
@@ -247,29 +270,39 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
-  void _showDeleteAccountDialog() {
+  void _showDeleteAccountDialog(ThemeData theme) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Delete Account?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red.shade600),
+            const SizedBox(width: 12),
+            const Text('Delete Account?'),
+          ],
+        ),
         content: const Text(
           'This action cannot be undone. All your data will be permanently deleted.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            child: const Text('Cancel'),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Account deletion cancelled'),
+                ),
+              );
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Color(0xFFFF6B6B)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade600,
             ),
+            child: const Text('Delete'),
           ),
         ],
       ),
