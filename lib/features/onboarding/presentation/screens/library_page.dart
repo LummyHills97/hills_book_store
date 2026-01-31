@@ -144,7 +144,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.primary.withOpacity(0.3),
+                color: theme.colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -193,7 +193,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -249,7 +249,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -354,8 +354,8 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
           boxShadow: [
             BoxShadow(
               color: isDark
-                  ? Colors.black.withOpacity(0.3)
-                  : Colors.black.withOpacity(0.08),
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : Colors.black.withValues(alpha: 0.08),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -377,7 +377,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 110,
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
                     child: Icon(
                       Icons.auto_stories,
                       size: 40,
@@ -495,13 +495,13 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
             Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.auto_stories_outlined,
                 size: 64,
-                color: theme.colorScheme.primary.withOpacity(0.5),
+                color: theme.colorScheme.primary.withValues(alpha: 0.5),
               ),
             ),
             const SizedBox(height: 24),
@@ -559,7 +559,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: theme.colorScheme.primary.withOpacity(0.15),
+              color: theme.colorScheme.primary.withValues(alpha: 0.15),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -577,7 +577,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(
@@ -604,7 +604,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.red.withOpacity(0.4),
+                        color: Colors.red.withValues(alpha: 0.4),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
