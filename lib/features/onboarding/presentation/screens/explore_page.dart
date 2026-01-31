@@ -80,11 +80,11 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                       end: Alignment.bottomCenter,
                       colors: isDark
                           ? [
-                              theme.colorScheme.primary.withOpacity(0.1),
+                              theme.colorScheme.primary.withValues(alpha: 0.1),
                               theme.scaffoldBackgroundColor,
                             ]
                           : [
-                              theme.colorScheme.primary.withOpacity(0.05),
+                              theme.colorScheme.primary.withValues(alpha: 0.05),
                               theme.scaffoldBackgroundColor,
                             ],
                     ),
@@ -179,7 +179,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: theme.colorScheme.primary.withOpacity(0.3),
+                                color: theme.colorScheme.primary.withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               )
@@ -244,7 +244,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                         Icon(
                           Icons.book_outlined,
                           size: 64,
-                          color: theme.iconTheme.color?.withOpacity(0.3),
+                          color: theme.iconTheme.color?.withValues(alpha: 0.3),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -445,11 +445,11 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
               end: Alignment.bottomCenter,
               colors: isDark
                   ? [
-                      theme.colorScheme.primary.withOpacity(0.2),
+                      theme.colorScheme.primary.withValues(alpha: 0.2),
                       theme.colorScheme.surface,
                     ]
                   : [
-                      theme.colorScheme.primary.withOpacity(0.1),
+                      theme.colorScheme.primary.withValues(alpha: 0.1),
                       theme.colorScheme.surface,
                     ],
             ),
@@ -463,7 +463,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     Icon(
                       Icons.map,
                       size: 64,
-                      color: theme.iconTheme.color?.withOpacity(0.3),
+                      color: theme.iconTheme.color?.withValues(alpha: 0.3),
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -527,7 +527,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         style: theme.textTheme.bodyLarge,
         decoration: InputDecoration(
           border: InputBorder.none,
-          icon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.6)),
+          icon: Icon(Icons.search, color: theme.iconTheme.color?.withValues(alpha: 0.6)),
           hintText: "Search books, authors...",
           hintStyle: theme.textTheme.bodyMedium,
         ),
@@ -556,7 +556,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.primary.withOpacity(0.3),
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -589,7 +589,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                       '${challenge['participants']} participants',
                       style: TextStyle(
                         color: isDark
-                            ? theme.colorScheme.onPrimary.withOpacity(0.7)
+                            ? theme.colorScheme.onPrimary.withValues(alpha: 0.7)
                             : Colors.white70,
                         fontSize: 13,
                       ),
@@ -644,7 +644,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: challenge['progress'],
-              backgroundColor: Colors.white.withOpacity(0.3),
+              backgroundColor: Colors.white.withValues(alpha: 0.3),
               valueColor: AlwaysStoppedAnimation<Color>(
                 isDark ? theme.colorScheme.tertiary : Colors.white,
               ),
@@ -679,8 +679,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         boxShadow: [
           BoxShadow(
             color: isDark
-                ? Colors.black.withOpacity(0.2)
-                : Colors.black.withOpacity(0.04),
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -691,7 +691,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: (community['color'] as Color).withOpacity(0.1),
+              color: (community['color'] as Color).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -786,8 +786,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         boxShadow: [
           BoxShadow(
             color: isDark
-                ? Colors.black.withOpacity(0.2)
-                : Colors.black.withOpacity(0.04),
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -798,7 +798,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withOpacity(0.1),
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
