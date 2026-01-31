@@ -25,13 +25,12 @@ class _LanguagePageState extends State<LanguagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text('Language'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
+        title: Text('Language', style: theme.appBarTheme.titleTextStyle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -39,24 +38,34 @@ class _LanguagePageState extends State<LanguagePage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF5E5CE6).withValues(alpha: 0.1),
+              gradient: LinearGradient(
+                colors: isDark
+                    ? [
+                        theme.colorScheme.primary.withValues(alpha: 0.2),
+                        theme.colorScheme.secondary.withValues(alpha: 0.1),
+                      ]
+                    : [
+                        theme.colorScheme.primary.withValues(alpha: 0.1),
+                        theme.colorScheme.secondary.withValues(alpha: 0.05),
+                      ],
+              ),
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: theme.colorScheme.primary.withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.info_outline,
-                  color: Color(0xFF5E5CE6),
+                  color: theme.colorScheme.primary,
                   size: 24,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'App will restart to apply language changes',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 14,
-                    ),
+                    style: theme.textTheme.bodyMedium,
                   ),
                 ),
               ],
@@ -65,94 +74,127 @@ class _LanguagePageState extends State<LanguagePage> {
           const SizedBox(height: 20),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: theme.dividerColor),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.2)
+                      : Colors.black.withValues(alpha: 0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: Column(
-              children: languages.map((lang) {
+              children: languages.asMap().entries.map((entry) {
+                final index = entry.key;
+                final lang = entry.value;
                 final isSelected = selectedLanguage == lang['name'];
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      setState(() => selectedLanguage = lang['name']!);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Language changed to ${lang['name']}'),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(16),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color(0xFF5E5CE6).withValues(alpha: 0.1)
-                                  : Colors.grey[100],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Text(
-                                lang['code']!.toUpperCase(),
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? const Color(0xFF5E5CE6)
-                                      : Colors.grey[600],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
+                final isLast = index == languages.length - 1;
+
+                return Column(
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() => selectedLanguage = lang['name']!);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Language changed to ${lang['name']}'),
+                              backgroundColor: theme.colorScheme.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
+                          );
+                        },
+                        borderRadius: BorderRadius.vertical(
+                          top: index == 0 ? const Radius.circular(20) : Radius.zero,
+                          bottom: isLast ? const Radius.circular(20) : Radius.zero,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  lang['name']!,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  gradient: isSelected
+                                      ? LinearGradient(
+                                          colors: [
+                                            theme.colorScheme.primary,
+                                            theme.colorScheme.secondary,
+                                          ],
+                                        )
+                                      : null,
+                                  color: isSelected ? null : theme.colorScheme.primary.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    lang['code']!.toUpperCase(),
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? (isDark ? theme.colorScheme.onPrimary : Colors.white)
+                                          : theme.colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  lang['nativeName']!,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey[600],
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      lang['name']!,
+                                      style: theme.textTheme.titleMedium?.copyWith(
+                                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      lang['nativeName']!,
+                                      style: theme.textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isSelected)
+                                Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        theme.colorScheme.primary,
+                                        theme.colorScheme.secondary,
+                                      ],
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.check,
+                                    color: isDark ? theme.colorScheme.onPrimary : Colors.white,
+                                    size: 20,
                                   ),
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
-                          if (isSelected)
-                            const Icon(
-                              Icons.check_circle,
-                              color: Color(0xFF5E5CE6),
-                            ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    if (!isLast) Divider(color: theme.dividerColor, height: 1),
+                  ],
                 );
               }).toList(),
             ),
