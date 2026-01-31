@@ -5,13 +5,12 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text('About'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
+        title: Text('About', style: theme.appBarTheme.titleTextStyle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -20,11 +19,14 @@ class AboutPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: theme.dividerColor),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.2)
+                      : Colors.black.withOpacity(0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -33,46 +35,57 @@ class AboutPage extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  width: 80,
-                  height: 80,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF5E5CE6), Color(0xFF8E8DFF)],
+                    gradient: LinearGradient(
+                      colors: isDark
+                          ? [const Color(0xFF1B4332), const Color(0xFF2D6A4F)]
+                          : [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
                   child: const Icon(
-                    Icons.menu_book,
-                    size: 40,
+                    Icons.auto_stories,
+                    size: 48,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text(
+                const SizedBox(height: 24),
+                Text(
                   'Hills Book Store',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.displaySmall,
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Version 1.0.0',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    'Version 1.0.0',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
                 Text(
-                  'Your gateway to endless stories. Discover, read, and share your favorite books.',
+                  'Your gateway to endless stories. Discover, read, and share your favorite books with a community of readers.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                    height: 1.5,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    height: 1.6,
                   ),
                 ),
               ],
@@ -82,13 +95,21 @@ class AboutPage extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Links
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 12),
+            child: Text('Legal & Info', style: theme.textTheme.titleLarge),
+          ),
+
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: theme.dividerColor),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.2)
+                      : Colors.black.withOpacity(0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -97,24 +118,59 @@ class AboutPage extends StatelessWidget {
             child: Column(
               children: [
                 _buildLinkTile(
-                  icon: Icons.article,
+                  theme,
+                  icon: Icons.article_outlined,
                   title: 'Terms of Service',
-                  onTap: () {},
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Opening Terms of Service...'),
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                    );
+                  },
                 ),
+                Divider(color: theme.dividerColor, height: 1),
                 _buildLinkTile(
-                  icon: Icons.privacy_tip,
+                  theme,
+                  icon: Icons.privacy_tip_outlined,
                   title: 'Privacy Policy',
-                  onTap: () {},
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Opening Privacy Policy...'),
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                    );
+                  },
                 ),
+                Divider(color: theme.dividerColor, height: 1),
                 _buildLinkTile(
-                  icon: Icons.gavel,
+                  theme,
+                  icon: Icons.gavel_outlined,
                   title: 'Licenses',
-                  onTap: () {},
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Opening Licenses...'),
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                    );
+                  },
                 ),
+                Divider(color: theme.dividerColor, height: 1),
                 _buildLinkTile(
-                  icon: Icons.web,
+                  theme,
+                  icon: Icons.web_outlined,
                   title: 'Visit Website',
-                  onTap: () {},
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Opening www.hillsbooks.com...'),
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -123,21 +179,16 @@ class AboutPage extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Social Links
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 12),
-            child: Text(
-              'Follow Us',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 12),
+            child: Text('Follow Us', style: theme.textTheme.titleLarge),
           ),
 
           Row(
             children: [
               Expanded(
                 child: _buildSocialButton(
+                  theme,
                   icon: Icons.facebook,
                   label: 'Facebook',
                   color: const Color(0xFF1877F2),
@@ -147,7 +198,8 @@ class AboutPage extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildSocialButton(
-                  icon: Icons.telegram,
+                  theme,
+                  icon: Icons.alternate_email,
                   label: 'Twitter',
                   color: const Color(0xFF1DA1F2),
                   onTap: () {},
@@ -162,6 +214,7 @@ class AboutPage extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildSocialButton(
+                  theme,
                   icon: Icons.camera_alt,
                   label: 'Instagram',
                   color: const Color(0xFFE4405F),
@@ -171,6 +224,7 @@ class AboutPage extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildSocialButton(
+                  theme,
                   icon: Icons.play_arrow,
                   label: 'YouTube',
                   color: const Color(0xFFFF0000),
@@ -180,18 +234,40 @@ class AboutPage extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 40),
 
           // Copyright
           Center(
-            child: Text(
-              '© 2024 Hills Book Store\nAll rights reserved',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[500],
-                height: 1.5,
-              ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.favorite,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '© 2024 Hills Book Store',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'All rights reserved',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Made with ❤️ in Nigeria',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -199,7 +275,8 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLinkTile({
+  Widget _buildLinkTile(
+    ThemeData theme, {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -208,34 +285,36 @@ class AboutPage extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF5E5CE6).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   icon,
-                  color: const Color(0xFF5E5CE6),
-                  size: 20,
+                  color: theme.colorScheme.primary,
+                  size: 22,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
+              Icon(
+                Icons.chevron_right,
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+              ),
             ],
           ),
         ),
@@ -243,19 +322,19 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialButton({
+  Widget _buildSocialButton(
+    ThemeData theme, {
     required IconData icon,
     required String label,
     required Color color,
     required VoidCallback onTap,
   }) {
     return Material(
-      // ignore: deprecated_member_use
       color: color.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Row(
