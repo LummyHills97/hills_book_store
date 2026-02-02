@@ -3,7 +3,6 @@ import 'package:hills_book_store/features/onboarding/presentation/screens/create
 import 'package:hills_book_store/features/onboarding/presentation/screens/forgot_password_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -18,8 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -36,21 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 32),
 
               // --- Title ---
-              const Text(
-                "Welcome Back !!!",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+              Text(
+                "Welcome Back!",
+                style: theme.textTheme.displayMedium,
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 "Login to your account to continue",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: theme.textTheme.bodyLarge,
               ),
               const SizedBox(height: 32),
 
@@ -58,12 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Email Address",
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  prefixIcon: Icon(Icons.email_outlined),
                 ),
               ),
               const SizedBox(height: 20),
@@ -87,9 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     },
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -106,13 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   },
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      color: Colors.green.shade900,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  child: const Text("Forgot Password?"),
                 ),
               ),
               const SizedBox(height: 16),
@@ -122,17 +104,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to MainNavigationScreen with Slide + Fade Transition
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
-                        transitionDuration:
-                            const Duration(milliseconds: 600),
-                        pageBuilder:
-                            (context, animation, secondaryAnimation) =>
-                                const MainNavigationScreen(), //  Changed to MainNavigationScreen
-                        transitionsBuilder: (context, animation,
-                            secondaryAnimation, child) {
+                        transitionDuration: const Duration(milliseconds: 600),
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const MainNavigationScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
                           const begin = Offset(1.0, 0.0);
                           const end = Offset.zero;
                           const curve = Curves.easeInOut;
@@ -152,21 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade900,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: const Text("Login"),
                 ),
               ),
               const SizedBox(height: 24),
@@ -178,8 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                      "- Or sign in with -",
-                      style: TextStyle(color: Colors.grey.shade700),
+                      "Or sign in with",
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
                   const Expanded(child: Divider()),
@@ -191,11 +156,11 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildSocialButton("assets/icons/google.png"),
+                  _buildSocialButton("assets/icons/google.png", colorScheme),
                   const SizedBox(width: 16),
-                  _buildSocialButton("assets/icons/facebook.png"),
+                  _buildSocialButton("assets/icons/facebook.png", colorScheme),
                   const SizedBox(width: 16),
-                  _buildSocialButton("assets/icons/twitter.png"),
+                  _buildSocialButton("assets/icons/twitter.png", colorScheme),
                 ],
               ),
               const SizedBox(height: 40),
@@ -204,7 +169,10 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? "),
+                  Text(
+                    "Don't have an account? ",
+                    style: theme.textTheme.bodyLarge,
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -216,8 +184,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text(
                       "Sign up",
-                      style: TextStyle(
-                        color: Colors.green.shade900,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -232,21 +200,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // --- Social Button Widget ---
-  Widget _buildSocialButton(String assetPath) {
+  Widget _buildSocialButton(String assetPath, ColorScheme colorScheme) {
     return InkWell(
       onTap: () {
         // Handle social login tap
       },
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: colorScheme.onSurface.withValues(alpha: 0.2),
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Image.asset(
           assetPath,
-          height: 30,
-          width: 30,
+          height: 28,
+          width: 28,
         ),
       ),
     );

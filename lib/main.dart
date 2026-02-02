@@ -3,6 +3,8 @@ import 'package:hills_book_store/core/theme/theme.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen.dart';
 
 void main() {
@@ -27,8 +29,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Automatically switches based on system setting
-      home: const MainNavigationScreen(),
+      themeMode: ThemeMode.system,
+      home: const OnboardingScreen(),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/main': (context) => const MainNavigationScreen(),
+      },
     );
   }
 }
