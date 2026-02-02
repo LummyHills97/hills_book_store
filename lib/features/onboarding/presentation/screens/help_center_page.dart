@@ -288,7 +288,7 @@ class HelpCenterPage extends StatelessWidget {
     return Theme(
       data: theme.copyWith(
         dividerColor: Colors.transparent,
-        splashColor: theme.colorScheme.primary.withOpacity(0.05),
+        splashColor: theme.colorScheme.primary.withValues(alpha: 0.05),
       ),
       child: ExpansionTile(
         tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -300,7 +300,7 @@ class HelpCenterPage extends StatelessWidget {
           ),
         ),
         iconColor: theme.colorScheme.primary,
-        collapsedIconColor: theme.iconTheme.color?.withOpacity(0.6),
+        collapsedIconColor: theme.iconTheme.color?.withValues(alpha: 0.6),
         children: [
           Text(
             answer,
