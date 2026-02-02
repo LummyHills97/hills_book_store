@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: SafeArea(
@@ -27,11 +28,22 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- Logo ---
+              // --- Logo with ColorFilter ---
               Center(
-                child: Image.asset(
-                  "assets/images/onboarding/onboarding0.png",
-                  height: 120,
+                child: ColorFiltered(
+                  colorFilter: isDarkMode
+                      ? const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        )
+                      : const ColorFilter.mode(
+                          Colors.transparent,
+                          BlendMode.multiply,
+                        ),
+                  child: Image.asset(
+                    "assets/images/onboarding/onboarding0.png",
+                    height: 120,
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
