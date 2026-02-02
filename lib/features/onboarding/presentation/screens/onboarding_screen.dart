@@ -25,6 +25,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDarkMode = theme.brightness == Brightness.dark;
     
     final pages = [
       {
@@ -68,7 +69,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(item['image']!, height: 250),
+                        // Image with color filter for dark mode
+                        ColorFiltered(
+                          colorFilter: isDarkMode
+                              ? const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                )
+                              : const ColorFilter.mode(
+                                  Colors.transparent,
+                                  BlendMode.multiply,
+                                ),
+                          child: Image.asset(item['image']!, height: 250),
+                        ),
                         const SizedBox(height: 40),
                         Text(
                           item['title']!,
