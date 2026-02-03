@@ -9,6 +9,7 @@ class CreateAccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: SafeArea(
@@ -17,9 +18,23 @@ class CreateAccountScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "assets/images/onboarding/onboarding0.png",
-                height: 120,
+              // Image with color filter for dark mode
+              ColorFiltered(
+                colorFilter: isDark
+                    ? const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      )
+                    : const ColorFilter.mode(
+                        Colors.transparent,
+                        BlendMode.dst,
+                      ),
+                child: Image.asset(
+                  "assets/images/onboarding/onboarding0.png",
+                  height: 120,
+                  color: isDark ? colorScheme.primary : null,
+                  colorBlendMode: isDark ? BlendMode.srcIn : null,
+                ),
               ),
               const SizedBox(height: 40),
               Text(
@@ -30,7 +45,11 @@ class CreateAccountScreen extends StatelessWidget {
               Text(
                 "Register as a school or individual to start shopping.",
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyLarge,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: isDark 
+                      ? theme.textTheme.bodyMedium?.color 
+                      : theme.textTheme.bodyLarge?.color,
+                ),
               ),
               const SizedBox(height: 50),
               
