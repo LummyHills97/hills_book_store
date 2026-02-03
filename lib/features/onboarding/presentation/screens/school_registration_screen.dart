@@ -287,7 +287,18 @@ class _SchoolRegistrationScreenState extends State<SchoolRegistrationScreen> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Navigate back to login screen
+                    // Option 1: If you have a LoginScreen, uncomment this:
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    // );
+                    
+                    // Option 2: If login is the first screen, use this:
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                    
+                    // Option 3: If you need to pop multiple screens:
+                    // Navigator.of(context)..pop()..pop();
                   },
                   child: Text(
                     "Already have an account? Sign In",
