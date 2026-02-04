@@ -619,7 +619,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isJoined
-                      ? Colors.white.withOpacity(0.3)
+                      ? Colors.white.withValues(alpha: 0.3)
                       : (isDark ? theme.colorScheme.onPrimary : Colors.white),
                   foregroundColor: isJoined
                       ? (isDark ? theme.colorScheme.onPrimary : Colors.white)

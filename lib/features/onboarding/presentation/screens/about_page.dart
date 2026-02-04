@@ -330,7 +330,7 @@ class AboutPage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: color.withOpacity(0.1),
+      color: color.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
