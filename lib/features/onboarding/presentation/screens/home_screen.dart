@@ -86,7 +86,7 @@ class HomeScreen extends StatelessWidget {
         title: Text(
           'Hi, Olumide 👋',
           style: theme.textTheme.displayMedium?.copyWith(
-            fontSize: 28,
+            fontSize: 25,
           ),
         ),
       ),
