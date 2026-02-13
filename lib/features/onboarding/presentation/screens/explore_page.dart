@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/data/books_data.dart';
+import 'package:hills_book_store/features/onboarding/presentation/screens/Community%20detail%20screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/book_details_screen.dart';
 import 'package:hills_book_store/features/onboarding/widgets/book_card.dart';
+// Import the new community detail screen
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -397,6 +399,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
   }
 
   Widget _buildBookstoresTab(ThemeData theme, bool isDark) {
+    // Mock bookstore data - Replace with API call when backend is ready
     final bookstores = [
       {
         'name': 'CSS Bookshop Lagos',
@@ -404,6 +407,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'distance': '2.3 km',
         'rating': 4.5,
         'image': Icons.store,
+        'lat': 6.4541, // Lagos Island coordinates
+        'lng': 3.3947,
       },
       {
         'name': 'Terra Kulture',
@@ -411,6 +416,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'distance': '3.1 km',
         'rating': 4.8,
         'image': Icons.store,
+        'lat': 6.4281,
+        'lng': 3.4219,
       },
       {
         'name': 'Quintessence',
@@ -418,6 +425,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'distance': '3.5 km',
         'rating': 4.6,
         'image': Icons.store,
+        'lat': 6.4274,
+        'lng': 3.4207,
       },
       {
         'name': 'Rovingheights Books',
@@ -425,6 +434,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'distance': '4.2 km',
         'rating': 4.7,
         'image': Icons.store,
+        'lat': 6.4541,
+        'lng': 3.4316,
       },
       {
         'name': 'Jazzhole Records & Books',
@@ -432,11 +443,15 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
         'distance': '4.8 km',
         'rating': 4.4,
         'image': Icons.store,
+        'lat': 6.4496,
+        'lng': 3.4352,
       },
     ];
 
     return Column(
       children: [
+        // This Container will be replaced with Google Map widget
+        // For now showing placeholder with instructions
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -467,7 +482,7 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Map View',
+                      'Map View (Google Maps Integration)',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -476,6 +491,22 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     Text(
                       'Showing ${bookstores.length} nearby bookstores',
                       style: theme.textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'See bookstores_map_widget.dart',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -669,109 +700,127 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
     final communityId = community['id'] as String;
     final isJoined = joinedCommunities.contains(communityId);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.dividerColor),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: (community['color'] as Color).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              community['icon'] as IconData,
+    return InkWell(
+      onTap: () {
+        // Navigate to CommunityDetailScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CommunityDetailScreen(
+              communityId: communityId,
+              communityName: community['name'] as String,
+              description: community['description'] as String,
+              icon: community['icon'] as IconData,
               color: community['color'] as Color,
-              size: 28,
+              members: community['members'] as String,
             ),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  community['name'] as String,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  community['description'] as String,
-                  style: theme.textTheme.bodySmall,
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.people,
-                      size: 14,
-                      color: theme.textTheme.bodyMedium?.color,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${community['members']} members',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ],
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: theme.dividerColor),
+          boxShadow: [
+            BoxShadow(
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.2)
+                  : Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                if (isJoined) {
-                  joinedCommunities.remove(communityId);
-                } else {
-                  joinedCommunities.add(communityId);
-                }
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isJoined
-                        ? 'Left ${community['name']}'
-                        : 'Joined ${community['name']}!',
-                  ),
-                  backgroundColor: theme.colorScheme.primary,
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isJoined ? theme.colorScheme.surface : theme.colorScheme.primary,
-              foregroundColor: isJoined ? theme.textTheme.bodyLarge?.color : theme.colorScheme.onPrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                side: isJoined ? BorderSide(color: theme.dividerColor) : BorderSide.none,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: (community['color'] as Color).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-            child: Text(
-              isJoined ? 'Joined ✓' : 'Join',
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+              child: Icon(
+                community['icon'] as IconData,
+                color: community['color'] as Color,
+                size: 28,
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    community['name'] as String,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    community['description'] as String,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.people,
+                        size: 14,
+                        color: theme.textTheme.bodyMedium?.color,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${community['members']} members',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  if (isJoined) {
+                    joinedCommunities.remove(communityId);
+                  } else {
+                    joinedCommunities.add(communityId);
+                  }
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isJoined
+                          ? 'Left ${community['name']}'
+                          : 'Joined ${community['name']}!',
+                    ),
+                    backgroundColor: theme.colorScheme.primary,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isJoined ? theme.colorScheme.surface : theme.colorScheme.primary,
+                foregroundColor: isJoined ? theme.textTheme.bodyLarge?.color : theme.colorScheme.onPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: isJoined ? BorderSide(color: theme.dividerColor) : BorderSide.none,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: Text(
+                isJoined ? 'Joined ✓' : 'Join',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -854,6 +903,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
           ),
           IconButton(
             onPressed: () {
+              // This will open Google Maps with directions
+              // Using url_launcher package
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Opening directions to ${store['name']}...'),
