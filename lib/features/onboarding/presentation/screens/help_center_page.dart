@@ -1,7 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HelpCenterPage extends StatelessWidget {
   const HelpCenterPage({super.key});
+
+  // ── Configure these to match your actual details ──────────────────────────
+  static const String _supportEmail = 'support@hillsbooks.com';
+  static const String _whatsappNumber = '+2348000000000'; // replace with your number
+  static const String _whatsappMessage = 'Hi! I need help with Hills Book Store.';
+  // ──────────────────────────────────────────────────────────────────────────
+
+  Future<void> _openEmail(BuildContext context) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: _supportEmail,
+      queryParameters: {
+        'subject': 'Support Request - Hills Book Store',
+      },
+    );
+    try {
+      await launchUrl(uri);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open email app. Write to $_supportEmail'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _openWhatsApp(BuildContext context) async {
+    final String encoded = Uri.encodeComponent(_whatsappMessage);
+    final String number = _whatsappNumber.replaceAll('+', '');
+    final Uri uri = Uri.parse('https://wa.me/$number?text=$encoded');
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Could not open WhatsApp. Please try again.'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +66,8 @@ class HelpCenterPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: isDark
-                    ? [const Color(0xFF1B4332), const Color(0xFF2D6A4F)]
-                    : [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1B4332), Color(0xFF2D6A4F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -62,10 +107,7 @@ class HelpCenterPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 const Text(
                   'Find answers to common questions',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 15),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
@@ -73,16 +115,9 @@ class HelpCenterPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _buildQuickAction(
-                        icon: Icons.chat_bubble_outline,
+                        icon: Icons.message,
                         label: 'Live Chat',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Live chat coming soon!'),
-                              backgroundColor: theme.colorScheme.primary,
-                            ),
-                          );
-                        },
+                        onTap: () => _openWhatsApp(context),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -90,14 +125,7 @@ class HelpCenterPage extends StatelessWidget {
                       child: _buildQuickAction(
                         icon: Icons.email_outlined,
                         label: 'Email Us',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('support@hillsbooks.com'),
-                              backgroundColor: theme.colorScheme.primary,
-                            ),
-                          );
-                        },
+                        onTap: () => _openEmail(context),
                       ),
                     ),
                   ],
@@ -206,43 +234,58 @@ class HelpCenterPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Still need help?',
-                  style: theme.textTheme.titleLarge,
-                ),
+                Text('Still need help?', style: theme.textTheme.titleLarge),
                 const SizedBox(height: 8),
                 Text(
-                  'Contact our support team',
+                  'Our support team is ready to assist you',
                   style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.support_agent),
-                    label: const Text(
-                      'Contact Support',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.message, size: 20),
+                        label: const Text('WhatsApp'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: theme.colorScheme.primary),
+                        ),
+                        onPressed: () => _openWhatsApp(context),
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Opening support chat...'),
-                          backgroundColor: theme.colorScheme.primary,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.email_outlined, size: 20),
+                        label: const Text('Email'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                      );
-                    },
-                  ),
+                        onPressed: () => _openEmail(context),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+
+          const SizedBox(height: 16),
+
+          // Support email hint
+          Center(
+            child: Text(
+              _supportEmail,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -304,9 +347,7 @@ class HelpCenterPage extends StatelessWidget {
         children: [
           Text(
             answer,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              height: 1.6,
-            ),
+            style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
           ),
         ],
       ),
