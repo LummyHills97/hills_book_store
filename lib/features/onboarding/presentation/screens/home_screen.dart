@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/cart_screen.dart';
+// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/data/books_data.dart';
 import 'package:hills_book_store/features/onboarding/data/models/book_model.dart';
