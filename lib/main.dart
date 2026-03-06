@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hills_book_store/core/theme/theme.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
+// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';

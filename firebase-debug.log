@@ -1,0 +1,24 @@
+[debug] [2026-03-05T15:26:27.458Z] ----------------------------------------------------------------------
+[debug] [2026-03-05T15:26:27.461Z] Command:       /usr/local/bin/node /usr/local/bin/firebase apps:create ios hills_book_store (ios) --bundle-id=com.olumide.hillsBookStore --json --project=hills-book-store
+[debug] [2026-03-05T15:26:27.461Z] CLI Version:   14.1.0
+[debug] [2026-03-05T15:26:27.462Z] Platform:      darwin
+[debug] [2026-03-05T15:26:27.462Z] Node Version:  v22.13.1
+[debug] [2026-03-05T15:26:27.462Z] Time:          Thu Mar 05 2026 16:26:27 GMT+0100 (West Africa Standard Time)
+[debug] [2026-03-05T15:26:27.462Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-05T15:26:27.467Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-05T15:26:27.468Z] > authorizing via signed-in user (akinnuliolumide97@gmail.com)
+[info] Create your IOS app in project hills-book-store:
+[debug] [2026-03-05T15:26:27.471Z] Checked if tokens are valid: true, expires at: 1772727938639
+[debug] [2026-03-05T15:26:27.472Z] Checked if tokens are valid: true, expires at: 1772727938639
+[debug] [2026-03-05T15:26:27.473Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/hills-book-store/iosApps [none]
+[debug] [2026-03-05T15:26:27.473Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/hills-book-store/iosApps {"displayName":"hills_book_store (ios)","bundleId":"com.olumide.hillsBookStore"}
+[debug] [2026-03-05T15:26:28.619Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/hills-book-store/iosApps 409
+[debug] [2026-03-05T15:26:28.619Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/hills-book-store/iosApps {"error":{"code":409,"message":"Requested entity already exists","status":"ALREADY_EXISTS"}}
+[debug] [2026-03-05T15:26:28.620Z] Request to https://firebase.googleapis.com/v1beta1/projects/hills-book-store/iosApps had HTTP Error: 409, Requested entity already exists
+[debug] [2026-03-05T15:26:29.123Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/hills-book-store/iosApps had HTTP Error: 409, Requested entity already exists
+    at responseToError (/usr/local/lib/node_modules/firebase-tools/lib/responseToError.js:52:12)
+    at RetryOperation._fn (/usr/local/lib/node_modules/firebase-tools/lib/apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to create iOS app for project hills-book-store. See firebase-debug.log for more info.

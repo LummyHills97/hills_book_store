@@ -4,11 +4,11 @@ import 'package:url_launcher/url_launcher.dart';
 class HelpCenterPage extends StatelessWidget {
   const HelpCenterPage({super.key});
 
-  // ── Configure these to match your actual details ──────────────────────────
+  // ── Configure these to match your actual details 
   static const String _supportEmail = 'support@hillsbooks.com';
   static const String _whatsappNumber = '+2348000000000'; // replace with your number
   static const String _whatsappMessage = 'Hi! I need help with Hills Book Store.';
-  // ──────────────────────────────────────────────────────────────────────────
+
 
   Future<void> _openEmail(BuildContext context) async {
     final Uri uri = Uri(
@@ -24,7 +24,7 @@ class HelpCenterPage extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Could not open email app. Write to $_supportEmail'),
+            content: const Text('Could not open email app. Write to $_supportEmail'),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
