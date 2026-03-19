@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:hills_book_store/core/utils/currency_formatter.dart';

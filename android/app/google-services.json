@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1053863547518",
+    "project_id": "hills-book-store",
+    "storage_bucket": "hills-book-store.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053863547518:android:2497a12c288eb0b6ddfe2f",
+        "android_client_info": {
+          "package_name": "com.olumide.hillsBookStore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXaDjoQqdVrl8Zs8nW1TWdqmPyvKbZgzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
