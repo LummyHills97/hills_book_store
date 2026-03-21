@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:hills_book_store/core/theme/theme.dart';
 import 'package:hills_book_store/features/onboarding/Providers/cart_provider.dart';
 import 'package:hills_book_store/features/onboarding/providers/profile_provider.dart';
-// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/login_screen.dart';
 import 'package:hills_book_store/features/onboarding/presentation/screens/main_navigation_screen.dart';
 
-
-
-// ignore: non_constant_identifier_names
-void main(dynamic DefaultFirebaseOptions) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+void main() {
   runApp(
     MultiProvider(
       providers: [
